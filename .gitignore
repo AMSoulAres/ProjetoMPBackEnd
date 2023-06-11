@@ -1,1 +1,5 @@
 serviceAccountKeys.json
+.coverage
+.vscode
+.pytest_cache
+.mypy_cache

@@ -1,6 +1,6 @@
 """Modulos importando o FastAPI"""
 from fastapi.testclient import TestClient
-from src.main import app
+from app.src.main import app
 
 client = TestClient(app)
 
@@ -22,7 +22,7 @@ def test_lista_usuario_por_id_sucesso():
     assert response.status_code == 200
     assert response.json() == { "admin": 1,
                                 "id": 1,
-                                "senha": 12346,
+                                "senha": 123456,
                                 "username": "admin"
                                 }
 
@@ -107,5 +107,5 @@ def test_deletar_usuario_sucesso():
                             "grupos": [0]
                             }
                         )
-    response = client.delete("/Usuarios/deletar-usuario/1")
+    response = client.delete("/Usuarios/deletar-usuario/989")
     assert response.status_code == 200

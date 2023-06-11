@@ -1,3 +1,4 @@
+"""Modulo para gerar erro HTTP"""
 from fastapi.exceptions import HTTPException
 
 ERRO_CAMPO = HTTPException(

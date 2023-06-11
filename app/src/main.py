@@ -1,6 +1,6 @@
 """Importando módulos básicos para conexão com DBcd"""
 from fastapi import FastAPI
-import src.usuarios_crud as usuarios_API
+import app.src.usuarios_crud as usuarios_API
 
 app = FastAPI()
 
