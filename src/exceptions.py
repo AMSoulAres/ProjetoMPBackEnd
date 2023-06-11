@@ -1,9 +1,11 @@
-from fastapi.responses import JSONResponse
+from fastapi.exceptions import HTTPException
 
-ERRO_CAMPO = JSONResponse(
-        status_code=404,
-        content={"message": "Erro: Campos não foram corretamente preenchidos"})
+ERRO_CAMPO = HTTPException(
+        status_code=400,
+        detail="Erro: Campos não foram corretamente preenchidos"
+        )
 
-ERRO_NAO_ESPERADO = JSONResponse(status_code=900,
-                                 content={"message": "Erro não esperado"}
-                                )
+ERRO_NAO_ESPERADO = HTTPException(
+        status_code=900,
+        detail="Erro não esperado"
+        )
