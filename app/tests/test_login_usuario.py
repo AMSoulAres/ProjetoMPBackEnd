@@ -8,8 +8,17 @@ def test_login_sucesso():
     """Teste de login"""
     response = client.post("/Login",
                          json={
-                            "username": "string",
-                            "senha": 999999,
+                            "username": "admin",
+                            "senha": 123456,
                             }
                         )
     assert response.status_code == 200
+
+def test_login_erro():
+    """Teste login"""
+    response = client.post("/Login",
+                           json={
+                            "username": "string",
+                            "senha": 999999,
+                            }
+                           )
