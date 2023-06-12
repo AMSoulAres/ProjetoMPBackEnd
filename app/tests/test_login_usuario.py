@@ -14,11 +14,22 @@ def test_login_sucesso():
                         )
     assert response.status_code == 200
 
-def test_login_erro():
+def test_login_erro_username():
     """Teste login"""
     response = client.post("/Login",
                            json={
-                            "username": "string",
+                            "username": "esseusuarionaoexiste",
                             "senha": 999999,
                             }
                            )
+    assert response.status_code == 404
+
+def test_login_erro_username():
+    """Teste login"""
+    response = client.post("/Login",
+                           json={
+                            "username": "admin",
+                            "senha": 999999,
+                            }
+                           )
+    assert response.status_code == 400
