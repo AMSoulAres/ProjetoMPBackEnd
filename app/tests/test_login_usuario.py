@@ -6,7 +6,7 @@ client = TestClient(app)
 
 def test_login_sucesso():
     """Teste de login"""
-    response = client.post("/Login",
+    response = client.post("/Login/",
                          json={
                             "username": "admin",
                             "senha": 123456,
@@ -16,7 +16,7 @@ def test_login_sucesso():
 
 def test_login_erro_username():
     """Teste login"""
-    response = client.post("/Login",
+    response = client.post("/Login/",
                            json={
                             "username": "esseusuarionaoexiste",
                             "senha": 999999,
@@ -24,9 +24,9 @@ def test_login_erro_username():
                            )
     assert response.status_code == 404
 
-def test_login_erro_username():
+def test_login_erro_senha():
     """Teste login"""
-    response = client.post("/Login",
+    response = client.post("/Login/",
                            json={
                             "username": "admin",
                             "senha": 999999,
