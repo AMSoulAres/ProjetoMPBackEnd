@@ -7,5 +7,5 @@ Instalar fastapi, uvicorn, django, pytest, pylint, firebase_admin, requests, pyt
 Também usar as extensões flake8, Pylint, autopep8 
 
 Rodar projeto com "python -m uvicorn app.src.main:app --reload"
-Para rodar testes digitar "pytest -vv"
+Para rodar testes digitar "pytest -vv" e "pytest -vv --cov" para ver a cobertura.
 Para rodar o Pylint e verificar código, rodar "Pylint ./app"
