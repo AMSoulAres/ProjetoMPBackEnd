@@ -1,6 +1,4 @@
 """Importando módulos básicos para conexão com DBcd"""
-import json
-from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
@@ -16,6 +14,15 @@ router = APIRouter(
 
 @router.post("/")
 def login_usuario(login_request: Login):
+    """Função de login de usuario
+    Assertivas de entrada:
+    Json no formato: {username: "string", password: "int"}
+
+    Assertiva de saída:
+    Verifica no banco o usuario e senha e retorna o status da requisição.
+    Retorna varia entre "sucesso" (200), "Senha inválida" (403), "Usuário não encontrado" (404)
+    
+    """
     usuarios = bancoAtlax.reference("/Usuarios").get()
 
     if (login_request.username is None or login_request.username == ""
@@ -27,8 +34,7 @@ def login_usuario(login_request: Login):
             if login_request.senha == usuario["senha"]:
                 return JSONResponse(status_code=200,
                                     content={"message": "sucesso"})
-            else:
-                raise HTTPException(status_code=400,
-                                     detail= {"message": "Senha inválida"})
+            raise HTTPException(status_code=403,
+                                    detail= {"message": "Senha inválida"})
     raise HTTPException(status_code=404,
-                                 detail={"message": f"Usuário de nome {login_request.username} não encontrado."})
+                detail={"message": f"Usuário de nome {login_request.username} não encontrado."})
