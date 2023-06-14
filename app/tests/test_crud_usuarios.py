@@ -120,9 +120,6 @@ def test_update_usuario_erro():
 
     assert response.status_code == 404
 
-def test_update
-
-
 """----------------------------Teste delete------------------------------------"""
 
 def test_deletar_usuario_sucesso():
