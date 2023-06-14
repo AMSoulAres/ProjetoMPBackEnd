@@ -32,4 +32,4 @@ def test_login_erro_senha():
                             "senha": 999999,
                             }
                            )
-    assert response.status_code == 400
+    assert response.status_code == 403
