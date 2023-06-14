@@ -80,7 +80,47 @@ def test_criar_usuario_erro_ja_existe():
     
 """----------------------------Teste Put------------------------------------"""
 
+def test_update_usuario_sucesso():
+    """Teste para atualizar usuário"""
+    client.post("/Usuarios/criar-usuario",
+                         json={
+                            "id": 989,
+                            "username": "string",
+                            "senha": 999999,
+                            "admin": 0,
+                            "preferencias": [0],
+                            "amigos": [1],
+                            "bloqueados": [0],
+                            "grupos": [0]
+                            }
+                        )
+    response = client.put("/Usuarios/update/989", 
+                           json={
+                               "senha": 999999,
+                               "preferencias": [1,2],
+                               "amigos": [1],
+                               "bloqueados": [0],
+                               "grupos": [1]
+                           })
+    assert response.status_code == 200
+    assert response.json() == {
+                                "id": 989,
+                                "username": "string",
+                                "senha": 999999,
+                                "admin": 0,
+                                "preferencias": [1,2],
+                                "amigos": [1],
+                                "bloqueados": [0],
+                                "grupos": [1]
+                            }
+    client.delete("/Usuarios/deletar-usuario/989")
 
+def test_update_usuario_erro():
+    response = client.put("/Usuarios/update/989")
+
+    assert response.status_code == 404
+
+def test_update
 
 
 """----------------------------Teste delete------------------------------------"""
