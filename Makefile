@@ -6,3 +6,6 @@ test:
 
 pylint:
 	pylint ./app
+
+clean:
+	rm -r app/__pycache__ ./app/src/__pycache__ ./app/src/models/__pycache__ ./app/tests/__pycache__
