@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
-from app.src.models.usuario_model import Usuario
+from app.src.models.usuario_model import UsuarioModel, UsuarioUpdateModel
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
 
@@ -40,22 +40,22 @@ async def lista_usuario_por_id(
                 )
 
 @router.post("/criar-usuario")
-async def criar_usuario(usuario: Usuario):
+async def criar_usuario(dados: UsuarioModel):
     """Cria um usuario"""
-    body = json.loads(usuario.json())
+    body = json.loads(dados.json())
     usuarios = bancoAtlax.reference("/Usuarios").get()
 
-    if usuario.id == 0:
+    if dados.id == 0:
         raise HTTPException(
                 status_code=400,
                 detail= "Erro: Usuário deve conter id diferente de 0"
             )
 
     for usuario_existente in usuarios.values():
-        if usuario.id == usuario_existente['id']:
+        if dados.id == usuario_existente['id']:
             raise HTTPException(
                 status_code=400,
-                detail= f"Erro: Usuário de id {usuario.id} já existe."
+                detail= f"Erro: Usuário de id {dados.id} já existe."
             )
 
     path = bancoAtlax.reference("/Usuarios")
@@ -65,6 +65,26 @@ async def criar_usuario(usuario: Usuario):
         status_code=201,
         content={"message" : "Usuário adicionado com sucesso!"}
     )
+
+@router.put("/update/{id_usuario}")
+async def atualizar_usuario(id_usuario: int, dados: UsuarioUpdateModel):
+    usuarios = bancoAtlax.reference("/Usuarios").get()
+
+    if dados.senha == 0:
+        raise exceptions.ERRO_CAMPO
+
+    for key, usuario in usuarios.items():
+        if id_usuario == usuario['id']:
+            usuario_armazenado = usuario
+            modelo_usuario = UsuarioModel(**usuario_armazenado)
+            dados_atualizados = dados.dict(exclude_unset=True) #Exclui os campos não preenchidos do modelo para não atualizar
+            usuario_atualizado = json.loads(modelo_usuario.copy(update=dados_atualizados).json())
+
+            bancoAtlax.reference("/Usuarios").child(str(key)).update(usuario_atualizado) #Atualiza os dados
+
+            return bancoAtlax.reference("/Usuarios").child(str(key)).get()
+    raise HTTPException(status_code=404,
+                        detail= {"message": "Usuario não encontrado"})
 
 @router.delete("/deletar-usuario/{id_usuario}")
 async def deletar_usuario(id_usuario: int):

@@ -42,7 +42,7 @@ def test_criar_usuario_sucesso():
     """Teste"""
     response = client.post("/Usuarios/criar-usuario",
                          json={
-                            "id": 999,
+                            "id": 989,
                             "username": "string",
                             "senha": 999999,
                             "admin": 0,
@@ -82,18 +82,6 @@ def test_criar_usuario_erro_ja_existe():
 
 def test_update_usuario_sucesso():
     """Teste para atualizar usuário"""
-    client.post("/Usuarios/criar-usuario",
-                         json={
-                            "id": 989,
-                            "username": "string",
-                            "senha": 999999,
-                            "admin": 0,
-                            "preferencias": [0],
-                            "amigos": [1],
-                            "bloqueados": [0],
-                            "grupos": [0]
-                            }
-                        )
     response = client.put("/Usuarios/update/989", 
                            json={
                                "senha": 999999,
@@ -113,29 +101,25 @@ def test_update_usuario_sucesso():
                                 "bloqueados": [0],
                                 "grupos": [1]
                             }
-    client.delete("/Usuarios/deletar-usuario/989")
 
 def test_update_usuario_erro():
-    response = client.put("/Usuarios/update/989")
+    response = client.put("/Usuarios/update/999",
+                          json={"senha": 1111})
 
     assert response.status_code == 404
+
+def test_update_usuario_bad_request():
+    response = client.put("/Usuarios/update/989",
+                          json={"senha": 0})
+
+    assert response.status_code == 400
+
+
 
 """----------------------------Teste delete------------------------------------"""
 
 def test_deletar_usuario_sucesso():
     """Teste"""
-    client.post("/Usuarios/criar-usuario",
-                         json={
-                            "id": 989,
-                            "username": "string",
-                            "senha": 999999,
-                            "admin": 0,
-                            "preferencias": [0],
-                            "amigos": [1],
-                            "bloqueados": [0],
-                            "grupos": [0]
-                            }
-                        )
     response = client.delete("/Usuarios/deletar-usuario/989")
     assert response.status_code == 200
 

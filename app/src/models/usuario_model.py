@@ -4,7 +4,7 @@
 from typing import Optional
 from pydantic import BaseModel
 
-class Usuario(BaseModel): # pylint: disable=too-few-public-methods
+class UsuarioModel(BaseModel): # pylint: disable=too-few-public-methods
     """Modelo de Usuario"""
     id: int
     username: str
@@ -14,3 +14,12 @@ class Usuario(BaseModel): # pylint: disable=too-few-public-methods
     amigos: list
     bloqueados: list
     grupos: list
+
+class UsuarioUpdateModel(BaseModel): # pylint: disable=too-few-public-methods
+    """Modelo de Usuario"""
+    senha: Optional[int]
+    admin: Optional[int] = 0
+    preferencias: Optional[list]
+    amigos: Optional[list]
+    bloqueados: Optional[list]
+    grupos: Optional[list]
