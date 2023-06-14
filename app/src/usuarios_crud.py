@@ -68,6 +68,17 @@ async def criar_usuario(dados: UsuarioModel):
 
 @router.put("/update/{id_usuario}")
 async def atualizar_usuario(id_usuario: int, dados: UsuarioUpdateModel):
+    """Atualiza o usuario
+
+    Assertiva de entrada: id do usuário e json com os dados que deseja alterar,
+     excluindo username e id
+
+    Assertiva de saída: o usuario é atualizado no banco e retornado na resposta
+    em caso de sucesso.
+
+    Em caso de erro, são retornado 400 (senha inválida), 404 (Usuário não encontrado)
+
+    """
     usuarios = bancoAtlax.reference("/Usuarios").get()
 
     if dados.senha == 0:
@@ -77,10 +88,13 @@ async def atualizar_usuario(id_usuario: int, dados: UsuarioUpdateModel):
         if id_usuario == usuario['id']:
             usuario_armazenado = usuario
             modelo_usuario = UsuarioModel(**usuario_armazenado)
-            dados_atualizados = dados.dict(exclude_unset=True) #Exclui os campos não preenchidos do modelo para não atualizar
+
+            #Exclui os campos não preenchidos do modelo para não atualizar
+            dados_atualizados = dados.dict(exclude_unset=True)
             usuario_atualizado = json.loads(modelo_usuario.copy(update=dados_atualizados).json())
 
-            bancoAtlax.reference("/Usuarios").child(str(key)).update(usuario_atualizado) #Atualiza os dados
+            #Atualiza os dados
+            bancoAtlax.reference("/Usuarios").child(str(key)).update(usuario_atualizado)
 
             return bancoAtlax.reference("/Usuarios").child(str(key)).get()
     raise HTTPException(status_code=404,

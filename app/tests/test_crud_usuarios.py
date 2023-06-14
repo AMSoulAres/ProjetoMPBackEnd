@@ -1,3 +1,4 @@
+# pylint: disable=pointless-string-statement
 """Modulos importando o FastAPI"""
 from fastapi.testclient import TestClient
 from app.src.main import app
@@ -35,8 +36,7 @@ def test_lista_usuario_por_id_erro_404():
     assert response.json() == {
                     "detail": "Erro: Usuário de id 0 não encontrado.",
                     }
-
-"""----------------------------Teste create------------------------------------"""
+""" ----------------------------Teste create------------------------------------ """
 
 def test_criar_usuario_sucesso():
     """Teste"""
@@ -77,12 +77,11 @@ def test_criar_usuario_erro_ja_existe():
     assert response.json() == {
                         "detail": "Erro: Usuário de id 1 já existe."
                         }
-    
 """----------------------------Teste Put------------------------------------"""
 
 def test_update_usuario_sucesso():
     """Teste para atualizar usuário"""
-    response = client.put("/Usuarios/update/989", 
+    response = client.put("/Usuarios/update/989",
                            json={
                                "senha": 999999,
                                "preferencias": [1,2],
@@ -103,19 +102,18 @@ def test_update_usuario_sucesso():
                             }
 
 def test_update_usuario_erro():
+    """Teste"""
     response = client.put("/Usuarios/update/999",
                           json={"senha": 1111})
 
     assert response.status_code == 404
 
 def test_update_usuario_bad_request():
+    """Teste"""
     response = client.put("/Usuarios/update/989",
                           json={"senha": 0})
 
     assert response.status_code == 400
-
-
-
 """----------------------------Teste delete------------------------------------"""
 
 def test_deletar_usuario_sucesso():
@@ -126,7 +124,7 @@ def test_deletar_usuario_sucesso():
 def test_deletar_usuario_erro():
     """Teste"""
     response = client.delete("/Usuarios/deletar-usuario/888")
-    
+
     assert response.status_code == 404
     assert response.json() == {
                         "detail": "Usuário não encontrado."
