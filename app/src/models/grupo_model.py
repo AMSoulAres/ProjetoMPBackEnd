@@ -5,13 +5,13 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class Grupo(BaseModel):  # pylint: disable=too-few-public-methods
+class GrupoModel(BaseModel):  # pylint: disable=too-few-public-methods
     """Modelo de grupo """
     id: int
     usuarios: list
     preferencias: list
 
 
-class GrupoUpdate(BaseModel):  # pylint: disable=too-few-public-methods
+class GrupoUpdateModel(BaseModel):  # pylint: disable=too-few-public-methods
     """Modelo de grupo"""
     usuarios: Optional[list]
