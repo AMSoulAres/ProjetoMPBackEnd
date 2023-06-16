@@ -42,24 +42,23 @@ async def lista_usuario_por_id(
 @router.post("/criar-usuario")
 async def criar_usuario(dados: UsuarioModel):
     """Cria um usuario"""
-    body = json.loads(dados.json())
     usuarios = bancoAtlax.reference("/Usuarios").get()
 
-    if dados.id == 0:
-        raise HTTPException(
-                status_code=400,
-                detail= "Erro: Usuário deve conter id diferente de 0"
-            )
+    total_id = bancoAtlax.reference("/Usuarios/Total").get()
+
+    dados.id = total_id + 1 # incrementa id
+
+    body = json.loads(dados.json())
 
     for usuario_existente in usuarios.values():
-        if dados.id == usuario_existente['id']:
+        if dados.id == usuario_existente['username']:
             raise HTTPException(
                 status_code=400,
                 detail= f"Erro: Usuário de id {dados.id} já existe."
             )
 
-    path = bancoAtlax.reference("/Usuarios")
-    path.push(body)
+    bancoAtlax.reference("/Usuarios").push(body)
+    bancoAtlax.reference("/Usuarios/Total").push(dados.id)
 
     return JSONResponse(
         status_code=201,
