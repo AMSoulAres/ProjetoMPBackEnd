@@ -29,7 +29,10 @@ def login_usuario(login_request: Login):
             or login_request.senha is None or login_request.senha == 0):
         raise exceptions.ERRO_CAMPO
 
-    for usuario in usuarios.values():
+    for key, usuario in usuarios.items():
+        if key == "Total":
+            break
+
         if login_request.username == usuario["username"]:
             if login_request.senha == usuario["senha"]:
                 return JSONResponse(status_code=200,

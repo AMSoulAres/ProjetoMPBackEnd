@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 class UsuarioModel(BaseModel): # pylint: disable=too-few-public-methods
     """Modelo de Usuario"""
-    id: int
+    id: Optional[int] = 0
     username: str
     senha: int
     admin: Optional[int] = 0

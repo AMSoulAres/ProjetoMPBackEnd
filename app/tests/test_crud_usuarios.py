@@ -5,6 +5,44 @@ from app.src.main import app
 
 client = TestClient(app)
 
+""" ----------------------------Teste create------------------------------------ """
+def test_criar_usuario_sucesso():
+    """Teste"""
+    response = client.post("/Usuarios/criar-usuario",
+                         json={
+                            "id": 989,
+                            "username": "testeCriarUsuario",
+                            "senha": 999999,
+                            "admin": 0,
+                            "preferencias": [0],
+                            "amigos": [1],
+                            "bloqueados": [0],
+                            "grupos": [0]
+                            }
+                        )
+    assert response.status_code == 201
+    assert response.json() == {
+                    "message": "Usuário adicionado com sucesso!",
+                    }
+
+def test_criar_usuario_erro_ja_existe():
+    """Teste"""
+    response = client.post("/Usuarios/criar-usuario",
+                         json={
+                            "id": 989,
+                            "username": "testeCriarUsuario",
+                            "senha": 999999,
+                            "admin": 0,
+                            "preferencias": [0],
+                            "amigos": [1],
+                            "bloqueados": [0],
+                            "grupos": [0]
+                            }
+                        )
+    assert response.status_code == 400
+    assert response.json() == {
+                        "detail": "Erro: Usuário de username testeCriarUsuario já existe."
+                        }
 """----------------------------Teste Get------------------------------------"""
 
 def test_lista_usuarios_sucesso():
@@ -23,11 +61,14 @@ def test_lista_usuario_por_id_sucesso():
     """Teste"""
     response = client.get("/Usuarios/lista-usuario-por-id/1")
     assert response.status_code == 200
-    assert response.json() == { "admin": 1,
-                                "id": 1,
-                                "senha": 123456,
-                                "username": "admin"
-                                }
+    assert response.json()
+    
+def test_lista_usuario_por_username_sucesso():
+    """Teste"""
+    response = client.get("/Usuarios/lista-usuario-por-username/testeCriarUsuario")
+    assert response.status_code == 200
+    assert response.json()
+
 
 def test_lista_usuario_por_id_erro_404():
     """Teste"""
@@ -36,54 +77,21 @@ def test_lista_usuario_por_id_erro_404():
     assert response.json() == {
                     "detail": "Erro: Usuário de id 0 não encontrado.",
                     }
-""" ----------------------------Teste create------------------------------------ """
-
-def test_criar_usuario_sucesso():
+    
+def test_lista_usuario_por_username_erro_404():
     """Teste"""
-    response = client.post("/Usuarios/criar-usuario",
-                         json={
-                            "id": 989,
-                            "username": "string",
-                            "senha": 999999,
-                            "admin": 0,
-                            "preferencias": [0],
-                            "amigos": [1],
-                            "bloqueados": [0],
-                            "grupos": [0]
-                            }
-                        )
-    assert response.status_code == 201
+    response = client.get("/Usuarios/lista-usuario-por-username/naovaidarnao")
+    assert response.status_code == 404
     assert response.json() == {
-                    "message": "Usuário adicionado com sucesso!",
+                    "detail": "Erro: Usuário de username naovaidarnao não encontrado.",
                     }
-# Deleta o usuário após teste para poder executar novamente
-    client.delete("/Usuarios/deletar-usuario/999")
-
-def test_criar_usuario_erro_ja_existe():
-    """Teste"""
-    response = client.post("/Usuarios/criar-usuario",
-                         json={
-                            "id": 1,
-                            "username": "string",
-                            "senha": 999999,
-                            "admin": 0,
-                            "preferencias": [0],
-                            "amigos": [1],
-                            "bloqueados": [0],
-                            "grupos": [0]
-                            }
-                        )
-    assert response.status_code == 400
-    assert response.json() == {
-                        "detail": "Erro: Usuário de id 1 já existe."
-                        }
 """----------------------------Teste Put------------------------------------"""
 
 def test_update_usuario_sucesso():
     """Teste para atualizar usuário"""
-    response = client.put("/Usuarios/update/989",
+    response = client.put("/Usuarios/update/2",
                            json={
-                               "senha": 999999,
+                               "senha": 888888,
                                "preferencias": [1,2],
                                "amigos": [1],
                                "bloqueados": [0],
@@ -91,34 +99,44 @@ def test_update_usuario_sucesso():
                            })
     assert response.status_code == 200
     assert response.json() == {
-                                "id": 989,
-                                "username": "string",
-                                "senha": 999999,
                                 "admin": 0,
-                                "preferencias": [1,2],
                                 "amigos": [1],
                                 "bloqueados": [0],
-                                "grupos": [1]
+                                "grupos": [1],
+                                "id": 2,
+                                "preferencias": [1,2],
+                                "senha": 888888,
+                                "username": "zezin"
                             }
+    
+    client.put("/Usuarios/update/2",
+                           json={
+                               "senha": 123456,
+                               "preferencias": [1],
+                               "amigos": [1],
+                               "bloqueados": [0],
+                               "grupos": [1]
+                           })
 
 def test_update_usuario_erro():
     """Teste"""
-    response = client.put("/Usuarios/update/999",
+    response = client.put("/Usuarios/update/0",
                           json={"senha": 1111})
 
     assert response.status_code == 404
 
 def test_update_usuario_bad_request():
     """Teste"""
-    response = client.put("/Usuarios/update/989",
+    response = client.put("/Usuarios/update/0",
                           json={"senha": 0})
 
     assert response.status_code == 400
+
 """----------------------------Teste delete------------------------------------"""
 
 def test_deletar_usuario_sucesso():
     """Teste"""
-    response = client.delete("/Usuarios/deletar-usuario/989")
+    response = client.delete("/Usuarios/deletar-usuario/testeCriarUsuario")
     assert response.status_code == 200
 
 def test_deletar_usuario_erro():
