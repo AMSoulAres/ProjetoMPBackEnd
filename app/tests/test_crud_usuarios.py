@@ -62,7 +62,7 @@ def test_lista_usuario_por_id_sucesso():
     response = client.get("/Usuarios/lista-usuario-por-id/1")
     assert response.status_code == 200
     assert response.json()
-    
+
 def test_lista_usuario_por_username_sucesso():
     """Teste"""
     response = client.get("/Usuarios/lista-usuario-por-username/testeCriarUsuario")
@@ -77,7 +77,7 @@ def test_lista_usuario_por_id_erro_404():
     assert response.json() == {
                     "detail": "Erro: Usuário de id 0 não encontrado.",
                     }
-    
+
 def test_lista_usuario_por_username_erro_404():
     """Teste"""
     response = client.get("/Usuarios/lista-usuario-por-username/naovaidarnao")
@@ -108,7 +108,7 @@ def test_update_usuario_sucesso():
                                 "senha": 888888,
                                 "username": "zezin"
                             }
-    
+
     client.put("/Usuarios/update/2",
                            json={
                                "senha": 123456,

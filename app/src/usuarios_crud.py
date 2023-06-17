@@ -1,6 +1,5 @@
 """Importando módulos básicos para conexão com DB"""
 import json
-from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
@@ -59,7 +58,7 @@ async def lista_usuario_por_username(
 
         if username == usuario['username']:
             return usuario
-        
+
     raise HTTPException(
                 status_code=404,
                 detail= f"Erro: Usuário de username {username} não encontrado."
