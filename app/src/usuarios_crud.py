@@ -6,12 +6,15 @@ from fastapi.exceptions import HTTPException
 from app.src.models.usuario_model import UsuarioModel, UsuarioUpdateModel
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
+from app.src.utils.busca_usuario import busca_usuario_id, busca_usuario_username
 
 router = APIRouter(
     prefix="/Usuarios",
     tags=["Usuarios"],
     responses={404: {"description": "Not Found"}}
 )
+
+# EU 1 - Recomendação de Grupos e Usuários
 
 @router.get("/lista-usuarios")
 async def lista_usuarios():
@@ -26,21 +29,11 @@ async def lista_usuario_por_id(
         ):
     """Busca um usuario por id"""
     usuarios = bancoAtlax.reference("/Usuarios").get()
+    try:
+        return busca_usuario_id(id_usuario, usuarios)
 
-    if id_usuario is None:
-        raise exceptions.ERRO_CAMPO
-
-    for key, usuario in usuarios.items():
-        if key == "Total":
-            break
-
-        if id_usuario == usuario['id']:
-            return usuario
-
-    raise HTTPException(
-                status_code=404,
-                detail= f"Erro: Usuário de id {id_usuario} não encontrado."
-                )
+    except HTTPException as exception:
+        raise exception
 
 @router.get("/lista-usuario-por-username/{username}")
 async def lista_usuario_por_username(
@@ -49,20 +42,10 @@ async def lista_usuario_por_username(
     """Busca um usuario por id"""
     usuarios = bancoAtlax.reference("/Usuarios").get()
 
-    if username is None:
-        raise exceptions.ERRO_CAMPO
-
-    for key, usuario in usuarios.items():
-        if key == "Total":
-            break
-
-        if username == usuario['username']:
-            return usuario
-
-    raise HTTPException(
-                status_code=404,
-                detail= f"Erro: Usuário de username {username} não encontrado."
-                )
+    try:
+        busca_usuario_username(username, usuarios)
+    except HTTPException as exception:
+        raise exception
 
 @router.post("/criar-usuario")
 async def criar_usuario(dados: UsuarioModel):
