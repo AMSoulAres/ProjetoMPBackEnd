@@ -18,7 +18,7 @@ router = APIRouter(
 
 # EU 5 - Interação com Grupos e Usuários
 
-@router.post("/lista-match-grupo-por-usuario/{id_usuario_base}")
+@router.get("/lista-match-grupo-por-usuario/{id_usuario_base}")
 async def lista_match_grupo_por_usuario(id_usuario_base: int):
     """
     Lista os matchs entre um usuário e os grupos existentes
@@ -48,7 +48,7 @@ async def lista_match_grupo_por_usuario(id_usuario_base: int):
     except HTTPException as exception:
         raise exception
 
-@router.post("/lista-match-usuarios-por-usuario/{id_usuario_base}")
+@router.get("/lista-match-usuarios-por-usuario/{id_usuario_base}")
 async def lista_match_usuarios_por_usuario(id_usuario_base: int):
     """
     Lista os matchs entre o usuario especificado e os usuarios existentes

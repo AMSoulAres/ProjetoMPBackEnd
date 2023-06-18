@@ -43,7 +43,7 @@ async def lista_usuario_por_username(
     usuarios = bancoAtlax.reference("/Usuarios").get()
 
     try:
-        busca_usuario_username(username, usuarios)
+        return busca_usuario_username(username, usuarios)
     except HTTPException as exception:
         raise exception
 

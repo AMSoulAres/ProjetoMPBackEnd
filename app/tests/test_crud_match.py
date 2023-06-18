@@ -5,13 +5,13 @@ from app.src.main import app
 
 client = TestClient(app)
 
-""" ----------------------------Teste create------------------------------------ """
-def test_criar_match_usuario_sucesso():
+""" ----------------------------Teste get------------------------------------ """
+def test_lista_match_grupo_por_usuario_sucesso():
     """Teste"""
-    response = client.get("/Match/cria-match-usuario")
-    assert response.status_code == 201
+    response = client.get("/Match/lista-match-grupo-por-usuario/2")
+    assert response.status_code == 200
 
-def test_criar_match_usuario_grupo_sucesso():
+def test_lista_match_usuarios_por_usuario_sucesso():
     """Teste"""
-    response = client.get("/Match/cria-match-usuario-grupo")
+    response = client.get("/Match/lista-match-usuarios-por-usuario/2")
     assert response.status_code == 200
