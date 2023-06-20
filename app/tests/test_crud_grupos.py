@@ -19,14 +19,20 @@ def teste_grupo_inicial():
 """" Teste Create """
 
 
-def teste_grupo_criar_grupo_falha():
+def teste_grupo_criar_grupo_falha_usuario_nao_e_admin():
     """ Teste """
     response = client.post("/Grupos/criar-grupo",
                            json={
-                               "id": 99,
-                               "nome": "terror",
-                               "usuarios": ["junior", "joao", "jose"],
-                               "preferencias": ["terror", "horror", "suspense"]
+                               "dados": {
+                                    "id": 99,
+                                    "nome": "terror",
+                                    "usuarios": ["junior", "joao", "jose"],
+                                    "preferencias": ["terror", "horror"]
+                               },
+                               "usuario": {
+                                   "username": "admin",
+                                   "senha": 0
+                               }
                            })
-    assert response.status_code == 404
-    assert response.json() == {"detail": "Not Found"}
+    assert response.status_code == 400
+    assert response.json() == {"message": "Erro: Usuário não é admin."}
