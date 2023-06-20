@@ -7,7 +7,8 @@ from pydantic import BaseModel
 
 class GrupoModel(BaseModel):  # pylint: disable=too-few-public-methods
     """Modelo de grupo """
-    id: int
+    id: Optional[int]
+    nome: str
     usuarios: list
     preferencias: list
 
