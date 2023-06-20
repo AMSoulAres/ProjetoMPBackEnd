@@ -36,8 +36,8 @@ async def criar_grupos(dados: GrupoModel, usuario: Login):
                     detail=f"Erro: Grupo de nome {dados.nome} já existe."
                 )
 
-        bancoAtlax.reference("/Usuarios").push(body)
-        bancoAtlax.reference("/Usuarios").child("Total").update({"num" : dados.id})
+        bancoAtlax.reference("/Grupos").push(body)
+        bancoAtlax.reference("/Grupos").child("Total").update({"num": dados.id})
 
         return JSONResponse(
             status_code=201,
@@ -46,7 +46,7 @@ async def criar_grupos(dados: GrupoModel, usuario: Login):
     else:
         return JSONResponse(
             status_code=400,
-            content={"message": "Erro: Usuário não é admin."}
+            content={"message": "Erro: Login de Administrador falhou."}
         )
 
 

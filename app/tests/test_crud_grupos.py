@@ -35,4 +35,24 @@ def teste_grupo_criar_grupo_falha_usuario_nao_e_admin():
                                }
                            })
     assert response.status_code == 400
-    assert response.json() == {"message": "Erro: Usuário não é admin."}
+    assert response.json() == {"message": "Erro: Login de Administrador falhou."}
+
+
+def teste_grupo_criar_grupo_sucesso():
+    """ Teste """
+    response = client.post("/Grupos/criar-grupo",
+                           json={
+                               "dados": {
+                                   "id": 102,
+                                   "nome": "Ação",
+                                   "usuarios": ["Carlos", "Joana"],
+                                   "preferencias": ["Ação"]
+                               },
+                               "usuario": {
+                                   "username": "admin",
+                                   "senha": 123456
+                               }
+                           })
+    assert response.status_code == 201
+    assert response.json() == {"message": "Grupo adicionado com sucesso!"}
+
