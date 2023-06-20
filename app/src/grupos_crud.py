@@ -18,5 +18,6 @@ router = APIRouter(
 
 @router.get("/lista-grupos")
 async def lista_grupos():
+    "Retorna todos os grupos registrados"
     path = bancoAtlax.reference("/Grupos")
     return path.get()
