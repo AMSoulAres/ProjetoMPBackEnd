@@ -9,10 +9,10 @@ class GrupoModel(BaseModel):  # pylint: disable=too-few-public-methods
     """Modelo de grupo """
     id: Optional[int]
     nome: str
-    usuarios: list
+    membros: list
     preferencias: list
 
 
 class GrupoUpdateModel(BaseModel):  # pylint: disable=too-few-public-methods
     """Modelo de grupo"""
-    usuarios: Optional[list]
+    membros: Optional[list]
