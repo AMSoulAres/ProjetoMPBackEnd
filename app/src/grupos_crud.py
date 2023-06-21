@@ -23,3 +23,14 @@ async def lista_grupos():
 
     path = bancoAtlax.reference("/Grupos")
     return path.get()
+
+
+@router.get("/busca-grupos-por-id/{id_grupo}")
+async def busca_grupos_por_id(id_grupo: int):
+    """Busca Grupo por ID"""
+    grupos = bancoAtlax.reference("/Grupos").get()
+    try:
+        return busca_grupo_id(id_grupo, grupos)
+
+    except HTTPException as exception:
+        raise exception
