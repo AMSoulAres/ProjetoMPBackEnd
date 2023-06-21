@@ -8,6 +8,7 @@ from app.src.models.grupo_model import GrupoModel, GrupoUpdateModel
 from app.src.models.login_model import Login
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
+from app.src.utils.busca_grupo import busca_grupo_id
 
 router = APIRouter(
     prefix="/Grupos",
@@ -18,7 +19,7 @@ router = APIRouter(
 
 @router.get("/lista-grupos")
 async def lista_grupos():
-    """Teste"""
+    """Lista Grupos"""
 
     path = bancoAtlax.reference("/Grupos")
     return path.get()
