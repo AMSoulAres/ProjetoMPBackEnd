@@ -53,3 +53,36 @@ def test_busca_grupo_por_nome_erro():
     assert response.json() == {
         "detail": "Erro: Grupo de nome grupo3542 não encontrado."
     }
+
+
+""" -------------------- Teste Post -------------------- """
+
+
+def test_cria_grupo_erro_nao_admin():
+    """Teste"""
+    response = client.post("/Grupos/criar-grupo/0",
+                           json={
+                              "id": 22,
+                              "nome": "Ação",
+                              "membros": ["Julio, Julia"],
+                              "preferencias": ["Ação"]
+                            })
+    assert response.status_code == 399
+    assert response.json() == {
+        "detail": "Erro: Usuário não é admin."
+    }
+
+
+def test_cria_grupo_erro_nome_existente():
+    """Teste"""
+    response = client.post("/Grupos/criar-grupo/admin",
+                           json={
+                               "id": 22,
+                               "nome": "qualquernome",
+                               "membros": ["Jubileu", "Carminha"],
+                               "preferencias": ["Ação"]
+                               })
+    assert response.status_code == 400
+    assert response.json() == {
+        "detail": "Erro: Grupo de nome qualquernome já existe."
+    }
