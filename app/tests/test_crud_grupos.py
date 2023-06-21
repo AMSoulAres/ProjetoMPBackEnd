@@ -37,3 +37,19 @@ def test_busca_grupo_por_id_erro():
     assert response.json() == {
         "detail": "Erro: Grupo de id 213214 não encontrado."
     }
+
+
+def test_busca_grupo_por_nome_sucesso():
+    """Teste"""
+    response = client.get("/Grupos/busca-grupos-por-nome/grupo1")
+    assert response.status_code == 200
+    assert response.json()
+
+
+def test_busca_grupo_por_nome_erro():
+    """Teste"""
+    response = client.get("/Grupos/busca-grupos-por-nome/grupo3542")
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": "Erro: Grupo de nome grupo3542 não encontrado."
+    }
