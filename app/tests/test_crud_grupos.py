@@ -128,3 +128,46 @@ def test_deleta_grupo_nao_encontrado():
     assert response.json() == {
         "detail": "Grupo não encontrado."
     }
+
+
+def test_grupo_remover_usuario_sucesso():
+    """Teste"""
+    response = client.post("/Grupos/atualizar-grupo/remover-membro/admin/Romance/Faustão")
+    assert response.status_code == 200
+    assert response.json() == {
+        "id": 6,
+        "membros": [
+            "Jô Soares"
+        ],
+        "nome": "Romance",
+        "preferencias": [
+            "Romance"
+        ]
+    }
+
+
+def test_grupo_remover_membro_erro_nao_admin():
+    """Teste"""
+    response = client.post("/Grupos/atualizar-grupo/remover-membro/joao/Romance/Ratinho")
+    assert response.status_code == 399
+    assert response.json() == {
+        "detail": "Erro: Usuário não é admin."
+    }
+
+
+def test_grupo_remover_membro_erro_membro_nao_encontrado():
+    """Teste"""
+    response = client.post("/Grupos/atualizar-grupo/remover-membro/admin/Romance/carlinhos")
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": "Erro: Membro não encontrado."
+    }
+
+
+def test_grupo_remover_membro_erro_grupo_nao_encontrado():
+    """Teste"""
+    response = client.post("/Grupos/atualizar-grupo/remover-membro/admin/jacare/carlinhos")
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": "Erro: Grupo não encontrado."
+    }

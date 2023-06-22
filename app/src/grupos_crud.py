@@ -149,3 +149,57 @@ async def deletar_grupo(nome_grupo: str, username: str):
         status_code=404,
         detail="Grupo não encontrado."
     )
+
+
+""" ------------------------- UPDATE -------------------------"""
+
+
+@router.post("/atualizar-grupo/remover-membro/{username}/{nome_grupo}/{username_removido}")
+async def atualizar_grupo(username: str, nome_grupo: str,
+                          username_removido: str):
+    """Remove um membro de um grupo
+
+    Assertiva de entrada: username do usuario, nome do grupo, username do
+    usuario à ser removido.
+
+    Assertiva de saída: o grupo é atualizado no banco e retornado na resposta
+    em caso de sucesso.
+
+    Em caso de erro
+    """
+    admin = 0
+    usuarios = bancoAtlax.reference("/Usuarios").get()
+    grupos = bancoAtlax.reference("/Grupos").get()
+
+    if username is None:
+        raise exceptions.ERRO_CAMPO
+    if nome_grupo is None:
+        raise exceptions.ERRO_CAMPO
+
+    for key, usuario in usuarios.items():
+        if key == "Total":
+            break
+
+        if username == usuario['username']:
+            if usuario['id'] == 1:
+                admin = 1
+    if admin == 0:
+        raise HTTPException(
+            status_code=399,
+            detail="Erro: Usuário não é admin."
+        )
+    for key, grupo in grupos.items():
+        if key == "Total":
+            break
+
+        if nome_grupo == grupo['nome']:
+            for membro in grupo['membros']:
+                if membro == username_removido:
+                    grupo['membros'].remove(username_removido)
+                    grupo_atualizado = grupo
+                    bancoAtlax.reference("/Grupos").child(str(key)).update(grupo_atualizado)
+                    return bancoAtlax.reference("/Grupos").child(str(key)).get()
+            raise HTTPException(status_code=404,
+                                detail="Erro: Membro não encontrado.")
+    raise HTTPException(status_code=404,
+                        detail="Erro: Grupo não encontrado.")
