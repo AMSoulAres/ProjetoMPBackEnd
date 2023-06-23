@@ -23,10 +23,11 @@ router = APIRouter(
 @router.post("/criar-grupo/{username}")
 async def criar_grupo(dados: GrupoModel, username: str):
     """Cria um Grupo
-    Assertivas de Entrada:
-    username do usuário, para checar se é admin, dados em formato json.
-    Assertiva de saída:
-    O grupo é criado no banco de dados.
+    Assertivas de Entrada: Username do usuário, para checar
+    se é admin, dados em formato json.
+
+    Assertiva de saída: O grupo é criado no banco de dados.
+
     Em caso de erro retorna: 404(Usuário não encontrado.),
     399(Usuário não é admin.), 400(Grupo de nome nome_do_grupo
     já existente.)"""
@@ -78,7 +79,11 @@ async def criar_grupo(dados: GrupoModel, username: str):
 
 @router.get("/lista-grupos")
 async def lista_grupos():
-    """Lista Grupos"""
+    """Lista Grupos.
+
+    Assertiva de entrada: /lista-grupos
+
+    Assertiva de saída: Grupos armazenados na base de dados."""
 
     path = bancoAtlax.reference("/Grupos")
     return path.get()
@@ -86,7 +91,14 @@ async def lista_grupos():
 
 @router.get("/busca-grupos-por-id/{id_grupo}")
 async def busca_grupos_por_id(id_grupo: int):
-    """Busca Grupo por ID"""
+    """Busca Grupo por ID.
+
+    Assertiva de entrada: ID do Grupo.
+
+    Assertiva de saída: Grupo procurado.
+
+    Em caso de erro retorna 404(Grupo de id 'id_grupo'
+    não encontrado.)"""
     grupos = bancoAtlax.reference("/Grupos").get()
     try:
         return busca_grupo_id(id_grupo, grupos)
@@ -97,7 +109,14 @@ async def busca_grupos_por_id(id_grupo: int):
 
 @router.get("/busca-grupos-por-nome/{nome_grupo}")
 async def busca_grupos_por_nome(nome_grupo: str):
-    """Busca Grupo por nome"""
+    """Busca Grupo por nome.
+
+    Assertiva de entrada: Nome do grupo.
+
+    Assertiva de saída: Grupo procurado.
+
+    Em caso de erro retorn 404(Grupo de nome
+    'nome_grupo' não encontrado.)"""
     grupos = bancoAtlax.reference("/Grupos").get()
     try:
         return busca_grupo_nome(nome_grupo, grupos)
@@ -106,13 +125,41 @@ async def busca_grupos_por_nome(nome_grupo: str):
         raise exception
 
 
+@router.get("/lista-grupos-por-preferencia/{preferencia}")
+async def lista_grupos_por_preferencia(preferencia: str):
+    """Lista grupos por preferência.
+
+    Assertiva de entrada: Preferência à ser pesquisada.
+
+    Assertiva de saída: Lista de nomes de grupos com a
+    preferencia desejada.
+
+    Em caso de erro retorna 404(Nenhum grupo encontrado.)"""
+
+    grupos = bancoAtlax.reference("/Grupos").get()
+    resultado = []
+    if preferencia is None:
+        raise exceptions.ERRO_CAMPO
+    for key, grupo in grupos.items():
+        if key == "Total":
+            break
+        if preferencia in grupo['preferencias']:
+            resultado.append(grupo)
+    if resultado == []:
+        raise HTTPException(
+            status_code=404,
+            detail="Nenhum grupo encontrado."
+        )
+    return resultado
+
 @router.get("/lista-membros/{nome_grupo}")
 async def grupo_lista_membros(nome_grupo: str):
-    """Lista membros de um grupo
-    Assertiva de entrada:
-    Nome do grupo.
-    Assertiva de saída:
-    Membros do grupo.
+    """Lista membros de um grupo.
+
+    Assertiva de entrada: Nome do grupo.
+
+    Assertiva de saída: Membros do grupo.
+
     Em caso de erro retorna 404(Grupo não encontrado.)."""
     grupos = bancoAtlax.reference("/Grupos").get()
     if nome_grupo is None:
@@ -134,7 +181,7 @@ async def grupo_lista_membros(nome_grupo: str):
 @router.put("/atualizar-grupo/remover-membro/{username}/{nome_grupo}/{username_removido}")
 async def atualizar_grupo_remover_membro(username: str, nome_grupo: str,
                                          username_removido: str):
-    """Remove um membro de um grupo
+    """Remove um membro de um grupo.
 
     Assertiva de entrada: username do usuario, nome do grupo, username do
     usuario à ser removido.
@@ -186,7 +233,7 @@ async def atualizar_grupo_remover_membro(username: str, nome_grupo: str,
 @router.put("/atualizar-grupo/adicionar-membro/{username}/{nome_grupo}/{username_adicionado}")
 async def atualizar_grupo_adicionar_membro(username: str, nome_grupo: str,
                                            username_adicionado: str):
-    """Adiciona um membro à um grupo
+    """Adiciona um membro à um grupo.
 
     Assertiva de entrada: username do usuario, nome do grupo, username do
     usuario à ser adicionado.
@@ -243,10 +290,11 @@ async def atualizar_grupo_adicionar_membro(username: str, nome_grupo: str,
 @router.delete("/deletar-grupo/{username}/{nome_grupo}")
 async def deletar_grupo(nome_grupo: str, username: str):
     """Deleta o grupo se o usuário for admin e o grupo for válido.
-    Assertivas de Entrada:
-    Nome do usuário, nome do grupo.
-    Assertivas de Saída:
-    O grupo é deletado no banco de dados.
+
+    Assertivas de Entrada: Nome do usuário, nome do grupo.
+
+    Assertivas de Saída: O grupo é deletado no banco de dados.
+
     Em caso de erro retorna 404 (Grupo não encontrado.), 404 (Usuário não
     encontrado.), 399 (Usuário não é admin.)."""
 

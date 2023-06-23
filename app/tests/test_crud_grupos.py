@@ -55,12 +55,47 @@ def test_busca_grupo_por_nome_erro():
     }
 
 
+def test_lista_grupo_por_preferencia_sucesso():
+    """Teste"""
+    response = client.get("/Grupos/lista-grupos-por-preferencia/Romance")
+    assert response.status_code == 200
+    assert response.json() == [
+        {
+            "id": 6,
+            "membros": [
+                "Jô Soares"
+            ],
+            "nome": "Romance",
+            "preferencias": [
+                "Romance"
+            ]
+        }
+        ]
+
+
+def test_lista_grupo_por_preferencia_erro_nenhum_grupo_com_preferencia():
+    """Teste"""
+    response = client.get("/Grupos/lista-grupos-por-preferencia/gurilasgrandes")
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": "Nenhum grupo encontrado."
+    }
+
+
 def test_grupo_lista_membros_sucesso():
     """Teste"""
     response = client.get("/Grupos/lista-membros/Romance")
     assert response.status_code == 200
     assert response.json()
 
+
+def test_grupo_lista_membros_erro_grupo_nao_encontrado():
+    """Teste"""
+    response = client.get("/Grupos/lista-membros/Gasdasd")
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": "Grupo não encontrado."
+    }
 
 """ ------------------------- TESTE POST ------------------------- """
 
