@@ -106,10 +106,32 @@ async def busca_grupos_por_nome(nome_grupo: str):
         raise exception
 
 
+@router.get("/lista-membros/{nome_grupo}")
+async def grupo_lista_membros(nome_grupo: str):
+    """Lista membros de um grupo
+    Assertiva de entrada:
+    Nome do grupo.
+    Assertiva de saída:
+    Membros do grupo.
+    Em caso de erro retorna 404(Grupo não encontrado.)."""
+    grupos = bancoAtlax.reference("/Grupos").get()
+    if nome_grupo is None:
+        raise exceptions.ERRO_CAMPO
+    for key, grupo in grupos.items():
+        if key == "Total":
+            break
+        if nome_grupo == grupo['nome']:
+            return grupo['membros']
+    raise HTTPException(
+        status_code=404,
+        detail="Grupo não encontrado."
+    )
+
+
 """ ------------------------- UPDATE -------------------------"""
 
 
-@router.post("/atualizar-grupo/remover-membro/{username}/{nome_grupo}/{username_removido}")
+@router.put("/atualizar-grupo/remover-membro/{username}/{nome_grupo}/{username_removido}")
 async def atualizar_grupo_remover_membro(username: str, nome_grupo: str,
                                          username_removido: str):
     """Remove um membro de um grupo
@@ -120,7 +142,7 @@ async def atualizar_grupo_remover_membro(username: str, nome_grupo: str,
     Assertiva de saída: o grupo é atualizado no banco e retornado na resposta
     em caso de sucesso.
 
-    Em caso de erro retorna 404(Usuário não encontrado.), 404(Grupo não encontrado),
+    Em caso de erro retorna 404(Usuário não encontrado.), 404(Grupo não encontrado.),
     399(Usuário não é admin.).
     """
     admin = 0
@@ -161,7 +183,7 @@ async def atualizar_grupo_remover_membro(username: str, nome_grupo: str,
                         detail="Erro: Grupo não encontrado.")
 
 
-@router.post("/atualizar-grupo/adicionar-membro/{username}/{nome_grupo}/{username_adicionado}")
+@router.put("/atualizar-grupo/adicionar-membro/{username}/{nome_grupo}/{username_adicionado}")
 async def atualizar_grupo_adicionar_membro(username: str, nome_grupo: str,
                                            username_adicionado: str):
     """Adiciona um membro à um grupo
@@ -218,7 +240,7 @@ async def atualizar_grupo_adicionar_membro(username: str, nome_grupo: str,
 """ ------------------------- DELETE -------------------------"""
 
 
-@router.post("/deletar-grupo/{username}/{nome_grupo}")
+@router.delete("/deletar-grupo/{username}/{nome_grupo}")
 async def deletar_grupo(nome_grupo: str, username: str):
     """Deleta o grupo se o usuário for admin e o grupo for válido.
     Assertivas de Entrada:
