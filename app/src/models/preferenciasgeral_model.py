@@ -4,6 +4,6 @@
 from typing import Optional
 from pydantic import BaseModel
 
-class Model(BaseModel):  # pylint: disable=too-few-public-methods
+class PreferenciasGeralModel(BaseModel):  # pylint: disable=too-few-public-methods
     """Modelo de preferencias """
     NomePreferencias: str
