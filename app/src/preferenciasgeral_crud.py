@@ -8,3 +8,9 @@ from app.src.models.preferenciasgeral_model import PreferenciasGeralModel
 from app.src.models.login_model import Login
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
+
+router = APIRouter(
+    prefix="/PreferenciasGeral",
+    tags=["PreferenciasGeral"],
+    responses={404: {"description": "Not Found"}}
+)
