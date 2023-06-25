@@ -23,17 +23,18 @@ def test_preferencias_geral_erro():
 """ ------------------------- TESTE POST ------------------------- """
 def test_cria_preferencias_sucesso():
     """Teste"""
-    response = client.post("/Preferencias/criar-preferencias/Romance/admin")
+    response = client.post("/Preferencias/criar-preferencias/admin/Romance")
     assert response.status_code == 201
     assert response.json() == {
-        "message": "Preferência(s) criada(s) com sucesso!"
+        "message": "Preferência criada com sucesso!"
     }
 
 
-def test_cria_preferencias_erro_preferencia_existente():
+""" ------------------------- TESTE DELETE -------------------------"""
+def test_deleta_grupo_sucesso():
     """Teste"""
-    response = client.post("/Grupos/criar-grupo/qualquernome/admin")
-    assert response.status_code == 400
+    response = client.delete("/Grupos/deletar-preferencias/admin/Romance")
+    assert response.status_code == 200
     assert response.json() == {
-        "detail": "Erro: Preferência qualquernome já existe."
+        "message": "Preferência deletada com sucesso."
     }
