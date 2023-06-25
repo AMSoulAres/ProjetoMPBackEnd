@@ -10,7 +10,7 @@ from app.src.config_db import bancoAtlax
 from app.src import exceptions
 
 router = APIRouter(
-    prefix="/PreferenciasGeral",
-    tags=["PreferenciasGeral"],
+    prefix="/Preferencias",
+    tags=["Preferencias"],
     responses={404: {"description": "Not Found"}}
 )

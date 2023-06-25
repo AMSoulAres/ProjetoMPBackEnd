@@ -31,7 +31,7 @@ def test_cria_preferencias_sucesso():
 
 
 """ ------------------------- TESTE DELETE -------------------------"""
-def test_deleta_grupo_sucesso():
+def test_deleta_preferencias_sucesso():
     """Teste"""
     response = client.delete("/Grupos/deletar-preferencias/admin/Romance")
     assert response.status_code == 200
