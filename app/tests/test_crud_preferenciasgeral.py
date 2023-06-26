@@ -52,11 +52,11 @@ def test_cria_preferencias_erro_nao_admin():
 """ ------------------------- TESTE DELETE -------------------------"""
 def test_deleta_preferencias_sucesso():
     """Teste"""
-    response = client.delete("/Preferencias/deletar-preferencias/admin",
+    response = client.post("/Preferencias/deletar-preferencias/admin",
                            json = {"NomePreferencias": "Romance"})
     assert response.status_code == 200
     assert response.json() == {
-        "message": "Preferência deletada com sucesso."
+        "message": "Preferência deletada com sucesso!"
     }
 
 def test_deleta_preferencias_erro_preferencia_nao_existe():

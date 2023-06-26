@@ -128,10 +128,7 @@ async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
             break
 
         if preferencia_existente['NomePreferencias'] == dados.NomePreferencias:
-            total_id = bancoAtlax.reference("/Preferencias/Total").child("num").get()
-            body = json.loads(dados.json())
-            bancoAtlax.reference("/Preferencias").pull(body)
-            bancoAtlax.reference("/Preferencias").child("Total").update({"num" : total_id - 1})
+            bancoAtlax.reference("/Preferencias").child(str(key)).delete()
             return JSONResponse(
                 status_code=200,
                 content={"message": "Preferência deletada com sucesso!"}
@@ -140,4 +137,3 @@ async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
         status_code=409,
         detail=f"Erro: Preferência {dados.NomePreferencias} não existe."
     )
-    
