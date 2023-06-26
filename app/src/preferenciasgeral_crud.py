@@ -52,10 +52,10 @@ async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
         if key == "Total":
             break
 
-        if preferencia_existente == dados.NomePreferencias:
+        if preferencia_existente['NomePreferencias'] == dados.NomePreferencias:
             raise HTTPException(
                 status_code=409,
-                detail=f"Erro: Preferência {preferencia_existente} já existente."
+                detail=f"Erro: Preferência {preferencia_existente['NomePreferencias']} já existe."
             )
         
     total_id = bancoAtlax.reference("/Preferencias/Total").child("num").get()

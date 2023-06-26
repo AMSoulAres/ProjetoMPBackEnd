@@ -33,10 +33,10 @@ def test_cria_preferencias_sucesso():
 def test_cria_preferencias_erro_preferencia_ja_existe():
     """Teste"""
     response = client.post("/Preferencias/criar-preferencias/admin",
-                           json = {"NomePreferencias": "Romance"})
+                           json = {"NomePreferencias": "Terror"})
     assert response.status_code == 409
     assert response.json() == {
-        "detail": "Erro: Preferência Romance já existente."
+        "detail": "Erro: Preferência Terror já existe."
     }
 
 def test_cria_preferencias_erro_nao_admin():
@@ -49,11 +49,11 @@ def test_cria_preferencias_erro_nao_admin():
     }
 
 
-
 """ ------------------------- TESTE DELETE -------------------------"""
 def test_deleta_preferencias_sucesso():
     """Teste"""
-    response = client.delete("/Preferencias/deletar-preferencias/admin/Romance")
+    response = client.delete("/Preferencias/deletar-preferencias/admin",
+                           json = {"NomePreferencias": "Romance"})
     assert response.status_code == 200
     assert response.json() == {
         "message": "Preferência deletada com sucesso."
@@ -61,8 +61,9 @@ def test_deleta_preferencias_sucesso():
 
 def test_deleta_preferencias_erro_nao_admin():
     """Teste"""
-    response = client.post("/Preferencias/deletar-preferencias/0/Romance")
-    assert response.status_code == 402
+    response = client.post("/Preferencias/deletar-preferencias/0",
+                           json = {"NomePreferencias": "Romance"})
+    assert response.status_code == 401
     assert response.json() == {
         "detail": "Erro: Usuário não é admin."
     }
