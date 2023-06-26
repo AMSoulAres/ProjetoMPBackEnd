@@ -19,3 +19,4 @@ app/src/models/__pycache__/match_models.cpython-311.pyc
 app/src/models/__pycache__/usuario_model.cpython-311.pyc
 app/src/utils/__pycache__/busca_grupo.cpython-311.pyc
 app/src/utils/__pycache__/busca_usuario.cpython-311.pyc
+*__pycaache__*
