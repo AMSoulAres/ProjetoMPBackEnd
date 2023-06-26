@@ -59,10 +59,19 @@ def test_deleta_preferencias_sucesso():
         "message": "Preferência deletada com sucesso."
     }
 
+def test_deleta_preferencias_erro_preferencia_ja_existe():
+    """Teste"""
+    response = client.post("/Preferencias/deletar-preferencias/admin",
+                           json = {"NomePreferencias": "Anime"})
+    assert response.status_code == 409
+    assert response.json() == {
+        "detail": "Erro: Preferência Anime não existe."
+    }
+
 def test_deleta_preferencias_erro_nao_admin():
     """Teste"""
     response = client.post("/Preferencias/deletar-preferencias/0",
-                           json = {"NomePreferencias": "Drama"})
+                           json = {"NomePreferencias": "Anime"})
     assert response.status_code == 401
     assert response.json() == {
         "detail": "Erro: Usuário não é admin."

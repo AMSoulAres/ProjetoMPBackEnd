@@ -20,9 +20,10 @@ router = APIRouter(
 """ ------------------------- CREATE -------------------------"""
 @router.post("/criar-preferencias/{username}")
 async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
-    """Cria uma preferência
-    Assertivas de Entrada: Nome da preferência, que deve
-    ser checada se já existe ou não, dados em formato json.
+    """Cria uma preferência se o usuário for admin e se a
+    Preferência não exisir.
+    Assertivas de Entrada: Username do usuário, para checar
+    se é admin, dados em formato json.
 
     Assertiva de saída: A preferência é criada na lista de
     preferência do banco de dados.
@@ -86,3 +87,35 @@ async def preferencias_geral():
 
     path = bancoAtlax.reference("/Preferencias")
     return path.get()
+
+
+
+""" ------------------------- DELETE -------------------------"""
+@router.post("/deletar-preferencias/{username}")
+async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
+    """Deleta uma preferência se o usuário for admin e a preferência for válida.
+    Assertivas de Entrada: Nome de usu, que deve
+    ser checada se já existe ou não, dados em formato json.
+
+    Assertiva de saída: A preferência é criada na lista de
+    preferência do banco de dados.
+
+    Em caso de erro retorna: 401(Usuário não é admin.),
+    409(Preferência já existe)."""
+    admin = 0
+    usuarios = bancoAtlax.reference("/Usuarios").get()
+    if username is None:
+        raise exceptions.ERRO_CAMPO
+
+    for key, usuario in usuarios.items():
+        if key == "Total":
+            break
+
+        if username == usuario['username']:
+            if usuario['id'] == 1:
+                admin = 1
+    if admin == 0:
+        raise HTTPException(
+            status_code=401,
+            detail="Erro: Usuário não é admin."
+        )
