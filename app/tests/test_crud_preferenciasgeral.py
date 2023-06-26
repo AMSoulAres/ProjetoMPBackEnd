@@ -23,18 +23,36 @@ def test_preferencias_geral_erro():
 """ ------------------------- TESTE POST ------------------------- """
 def test_cria_preferencias_sucesso():
     """Teste"""
-    response = client.post("/Preferencias/criar-preferencias/admin/Romance")
+    response = client.post("/Preferencias/criar-preferencias/admin",
+                           json = {"NomePreferencias": "Romance"})
     assert response.status_code == 201
     assert response.json() == {
         "message": "Preferência criada com sucesso!"
     }
 
+def test_cria_preferencias_erro_nao_admin():
+    """Teste"""
+    response = client.post("/Preferencias/criar-preferencias/0/Romance")
+    assert response.status_code == 401
+    assert response.json() == {
+        "detail": "Erro: Usuário não é admin."
+    }
+
+
 
 """ ------------------------- TESTE DELETE -------------------------"""
 def test_deleta_preferencias_sucesso():
     """Teste"""
-    response = client.delete("/Grupos/deletar-preferencias/admin/Romance")
+    response = client.delete("/Preferencias/deletar-preferencias/admin/Romance")
     assert response.status_code == 200
     assert response.json() == {
         "message": "Preferência deletada com sucesso."
+    }
+
+def test_deleta_preferencias_erro_nao_admin():
+    """Teste"""
+    response = client.post("/Preferencias/deletar-preferencias/0/Romance")
+    assert response.status_code == 402
+    assert response.json() == {
+        "detail": "Erro: Usuário não é admin."
     }
