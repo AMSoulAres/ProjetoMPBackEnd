@@ -59,7 +59,7 @@ def test_deleta_preferencias_sucesso():
         "message": "Preferência deletada com sucesso."
     }
 
-def test_deleta_preferencias_erro_preferencia_ja_existe():
+def test_deleta_preferencias_erro_preferencia_nao_existe():
     """Teste"""
     response = client.post("/Preferencias/deletar-preferencias/admin",
                            json = {"NomePreferencias": "Anime"})

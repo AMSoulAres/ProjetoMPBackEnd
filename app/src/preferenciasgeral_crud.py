@@ -94,14 +94,13 @@ async def preferencias_geral():
 @router.post("/deletar-preferencias/{username}")
 async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
     """Deleta uma preferência se o usuário for admin e a preferência for válida.
-    Assertivas de Entrada: Nome de usu, que deve
-    ser checada se já existe ou não, dados em formato json.
+    Assertivas de Entrada: Nome de usuário, dados em formato json.
 
-    Assertiva de saída: A preferência é criada na lista de
+    Assertiva de saída: A preferência é deletada da lista de
     preferência do banco de dados.
 
     Em caso de erro retorna: 401(Usuário não é admin.),
-    409(Preferência já existe)."""
+    409(Preferência não existe)."""
     admin = 0
     usuarios = bancoAtlax.reference("/Usuarios").get()
     if username is None:
@@ -119,3 +118,26 @@ async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
             status_code=401,
             detail="Erro: Usuário não é admin."
         )
+    
+    preferencias = bancoAtlax.reference("/Preferencias").get()
+    if dados.NomePreferencias is None:
+        raise exceptions.ERRO_CAMPO
+
+    for key, preferencia_existente in preferencias.items():
+        if key == "Total":
+            break
+
+        if preferencia_existente['NomePreferencias'] == dados.NomePreferencias:
+            total_id = bancoAtlax.reference("/Preferencias/Total").child("num").get()
+            body = json.loads(dados.json())
+            bancoAtlax.reference("/Preferencias").pull(body)
+            bancoAtlax.reference("/Preferencias").child("Total").update({"num" : total_id - 1})
+            return JSONResponse(
+                status_code=200,
+                content={"message": "Preferência deletada com sucesso!"}
+            )
+    raise HTTPException(
+        status_code=409,
+        detail=f"Erro: Preferência {dados.NomePreferencias} não existe."
+    )
+    
