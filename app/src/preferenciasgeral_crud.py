@@ -15,6 +15,8 @@ router = APIRouter(
     responses={404: {"description": "Not Found"}}
 )
 
+
+
 """ ------------------------- CREATE -------------------------"""
 @router.post("/criar-preferencias/{username}")
 async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
@@ -25,7 +27,8 @@ async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
     Assertiva de saída: A preferência é criada na lista de
     preferência do banco de dados.
 
-    Em caso de erro retorna: 402(Usuário não é admin.)"""
+    Em caso de erro retorna: 401(Usuário não é admin.),
+    409(Preferência já existe)."""
     admin = 0
     usuarios = bancoAtlax.reference("/Usuarios").get()
     if username is None:
@@ -68,3 +71,18 @@ async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
         status_code=201,
         content={"message": "Preferência criada com sucesso!"}
     )
+
+
+
+""" ------------------------- READ -------------------------"""
+@router.get("/preferencias-geral")
+async def preferencias_geral():
+    """Lista Preferências Geral.
+
+    Assertiva de entrada: /preferencias-geral
+
+    Assertiva de saída: Preferências armazenadas
+    na base de dados."""
+
+    path = bancoAtlax.reference("/Preferencias")
+    return path.get()

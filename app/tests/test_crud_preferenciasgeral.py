@@ -62,7 +62,7 @@ def test_deleta_preferencias_sucesso():
 def test_deleta_preferencias_erro_nao_admin():
     """Teste"""
     response = client.post("/Preferencias/deletar-preferencias/0",
-                           json = {"NomePreferencias": "Romance"})
+                           json = {"NomePreferencias": "Drama"})
     assert response.status_code == 401
     assert response.json() == {
         "detail": "Erro: Usuário não é admin."
