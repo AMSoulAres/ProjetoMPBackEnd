@@ -1,11 +1,9 @@
 """Importando módulos básicos para conexão com DBcd"""
 import json
-from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 from app.src.models.preferenciasgeral_model import PreferenciasGeralModel
-from app.src.models.login_model import Login
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
 
@@ -61,7 +59,7 @@ async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
                 status_code=409,
                 detail=f"Erro: Preferência {preferencia_existente['NomePreferencias']} já existe."
             )
-        
+
     total_id = bancoAtlax.reference("/Preferencias/Total").child("num").get()
     body = json.loads(dados.json())
 
@@ -91,8 +89,8 @@ async def preferencias_geral():
 
 
 """ ------------------------- DELETE -------------------------"""
-@router.post("/deletar-preferencias/{username}")
-async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
+@router.delete("/deletar-preferencias/{username}/{nome_preferencia}")
+async def deletar_preferencias(username: str, nome_preferencia: str):
     """Deleta uma preferência se o usuário for admin e a preferência for válida.
     Assertivas de Entrada: Nome de usuário, dados em formato json.
 
@@ -118,22 +116,22 @@ async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
             status_code=401,
             detail="Erro: Usuário não é admin."
         )
-    
+
     preferencias = bancoAtlax.reference("/Preferencias").get()
-    if dados.NomePreferencias is None:
+    if nome_preferencia is None:
         raise exceptions.ERRO_CAMPO
 
     for key, preferencia_existente in preferencias.items():
         if key == "Total":
             break
 
-        if preferencia_existente['NomePreferencias'] == dados.NomePreferencias:
+        if preferencia_existente['NomePreferencias'] == nome_preferencia:
             bancoAtlax.reference("/Preferencias").child(str(key)).delete()
             return JSONResponse(
                 status_code=200,
                 content={"message": "Preferência deletada com sucesso!"}
             )
     raise HTTPException(
-        status_code=409,
-        detail=f"Erro: Preferência {dados.NomePreferencias} não existe."
+        status_code=404,
+        detail=f"Erro: Preferência {nome_preferencia} não existe."
     )

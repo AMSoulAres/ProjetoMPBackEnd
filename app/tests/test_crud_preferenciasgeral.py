@@ -24,7 +24,7 @@ def test_preferencias_geral_erro():
 def test_cria_preferencias_sucesso():
     """Teste"""
     response = client.post("/Preferencias/criar-preferencias/admin",
-                           json = {"NomePreferencias": "Romance"})
+                           json = {"NomePreferencias": "TestePraCriarPreferencia"})
     assert response.status_code == 201
     assert response.json() == {
         "message": "Preferência criada com sucesso!"
@@ -42,7 +42,7 @@ def test_cria_preferencias_erro_preferencia_ja_existe():
 def test_cria_preferencias_erro_nao_admin():
     """Teste"""
     response = client.post("/Preferencias/criar-preferencias/0",
-                           json = {"NomePreferencias": "Romance"})
+                           json = {"NomePreferencias": "TestePraCriarPreferencia"})
     assert response.status_code == 401
     assert response.json() == {
         "detail": "Erro: Usuário não é admin."
@@ -52,8 +52,7 @@ def test_cria_preferencias_erro_nao_admin():
 """ ------------------------- TESTE DELETE -------------------------"""
 def test_deleta_preferencias_sucesso():
     """Teste"""
-    response = client.post("/Preferencias/deletar-preferencias/admin",
-                           json = {"NomePreferencias": "Romance"})
+    response = client.delete("/Preferencias/deletar-preferencias/admin/TestePraCriarPreferencia")
     assert response.status_code == 200
     assert response.json() == {
         "message": "Preferência deletada com sucesso!"
@@ -61,17 +60,15 @@ def test_deleta_preferencias_sucesso():
 
 def test_deleta_preferencias_erro_preferencia_nao_existe():
     """Teste"""
-    response = client.post("/Preferencias/deletar-preferencias/admin",
-                           json = {"NomePreferencias": "Anime"})
-    assert response.status_code == 409
+    response = client.delete("/Preferencias/deletar-preferencias/admin/EsseNaoExiste")
+    assert response.status_code == 404
     assert response.json() == {
-        "detail": "Erro: Preferência Anime não existe."
+        "detail": "Erro: Preferência EsseNaoExiste não existe."
     }
 
 def test_deleta_preferencias_erro_nao_admin():
     """Teste"""
-    response = client.post("/Preferencias/deletar-preferencias/0",
-                           json = {"NomePreferencias": "Anime"})
+    response = client.delete("/Preferencias/deletar-preferencias/0/TestePraCriarPreferencia")
     assert response.status_code == 401
     assert response.json() == {
         "detail": "Erro: Usuário não é admin."

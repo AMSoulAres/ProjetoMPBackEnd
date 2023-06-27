@@ -1,5 +1,5 @@
 all:
-	python3.11 -m uvicorn app.src.main:app --reload
+	python -m uvicorn app.src.main:app --reload
 
 test:
 	pytest -vv --cov
