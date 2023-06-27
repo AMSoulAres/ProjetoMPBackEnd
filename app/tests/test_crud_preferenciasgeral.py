@@ -12,6 +12,11 @@ def test_preferencias_geral_sucesso():
     assert response.status_code == 200
     assert response.json()
 
+def test_lista_preferencias():
+    """Test"""
+    response = client.get("/Preferencias/lista-preferencias")
+    assert response.status_code == 200
+    assert response.json()
 
 def test_preferencias_geral_erro():
     """"Teste"""

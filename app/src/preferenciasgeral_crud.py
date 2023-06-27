@@ -86,6 +86,24 @@ async def preferencias_geral():
     path = bancoAtlax.reference("/Preferencias")
     return path.get()
 
+@router.get("/lista-preferencias")
+async def lista_preferencias():
+    """Lista Preferências Geral.
+
+    Assertiva de entrada: /preferencias-geral
+
+    Assertiva de saída: Preferências armazenadas
+    na base de dados."""
+    lista_preferencias = []
+    preferencias = bancoAtlax.reference("/Preferencias").get()
+    for key, preferencia in preferencias.items():
+        if key == "Total":
+            break
+
+        lista_preferencias.append(preferencia["NomePreferencias"])
+
+    return lista_preferencias
+
 
 
 """ ------------------------- DELETE -------------------------"""
