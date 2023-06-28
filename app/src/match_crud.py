@@ -1,11 +1,6 @@
 """Importando módulos básicos para conexão com DB"""
-import json
-from typing import Optional
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
-from app.src.models.match_models import MatchUsuarioGrupoModel, MatchUsuarioGrupoModelUpdate
-from app.src.models.match_models import MatchUsuarioModel, MatchUsuarioModelUpdate
 from app.src.config_db import bancoAtlax
 from app.src.utils.busca_usuario import busca_usuario_id
 from app.algoritmo_match import match_lists
