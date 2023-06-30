@@ -10,10 +10,10 @@ class UsuarioModel(BaseModel): # pylint: disable=too-few-public-methods
     username: str
     senha: int
     admin: Optional[int] = 0
-    preferencias: list
-    amigos: list
-    bloqueados: list
-    grupos: list
+    preferencias: Optional[list] = []
+    amigos: Optional[list] = []
+    bloqueados: Optional[list] = []
+    grupos: Optional[list] = []
 
 class UsuarioUpdateModel(BaseModel): # pylint: disable=too-few-public-methods
     """Modelo de Usuario"""

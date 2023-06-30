@@ -33,11 +33,15 @@ async def lista_match_grupo_por_usuario(id_usuario_base: int):
         for key, grupo in grupos.items():
             if key == "Total":
                 break
-
-            match = match_lists(grupo["preferencias"], usuario_base["preferencias"])
-            match_porcentagem = f"{match:.2%}"
-            relacao_grupo_match = {grupo["nome"] : match_porcentagem}
-            matchs_dict.update(relacao_grupo_match)
+            try:
+                match = match_lists(grupo["preferencias"], usuario_base["preferencias"])
+                match_porcentagem = f"{match:.2%}"
+                relacao_grupo_match = {grupo["nome"] : match_porcentagem}
+                matchs_dict.update(relacao_grupo_match)
+            except KeyError:
+                relacao_grupo_match = {grupo["nome"] : "0%"}
+                matchs_dict.update(relacao_grupo_match)
+                
         return matchs_dict
 
     except HTTPException as exception:
@@ -65,10 +69,14 @@ async def lista_match_usuarios_por_usuario(id_usuario_base: int):
                 break
 
             if (usuario["username"] != usuario_base["username"] and usuario["id"] != 1):
-                match = match_lists(usuario["preferencias"], usuario_base["preferencias"])
-                match_porcentagem = f"{match:.2%}"
-                relacao_usuario_match = {usuario["username"] : match_porcentagem}
-                matchs_dict.update(relacao_usuario_match)
+                try:
+                    match = match_lists(usuario["preferencias"], usuario_base["preferencias"])
+                    match_porcentagem = f"{match:.2%}"
+                    relacao_usuario_match = {usuario["username"] : match_porcentagem}
+                    matchs_dict.update(relacao_usuario_match)
+                except KeyError:
+                    relacao_usuario_match = {usuario["username"] : "0%"}
+                    matchs_dict.update(relacao_usuario_match)
 
         return matchs_dict
 

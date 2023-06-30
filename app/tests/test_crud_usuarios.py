@@ -39,7 +39,7 @@ def test_criar_usuario_erro_ja_existe():
                             "grupos": [0]
                             }
                         )
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert response.json() == {
                         "detail": "Erro: Usuário de username testeCriarUsuario já existe."
                         }

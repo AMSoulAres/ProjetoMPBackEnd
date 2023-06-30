@@ -49,7 +49,13 @@ async def lista_usuario_por_username(
 
 @router.post("/criar-usuario")
 async def criar_usuario(dados: UsuarioModel):
-    """Cria um usuario"""
+    """Cria um usuario
+        Assertiva de entrada: 
+            recebe as informações do UsuarioModel, sendo obrigatórios username e senha
+        Assertiva de saída:
+            retorna uma mensagem de sucesso caso o username não exista no sistema
+            caso o username exista, retorna 409 para username cadastrado
+    """
     usuarios = bancoAtlax.reference("/Usuarios").get()
     total_id = bancoAtlax.reference("/Usuarios/Total").child("num").get()
     dados.id = total_id + 1 # incrementa id
@@ -61,7 +67,7 @@ async def criar_usuario(dados: UsuarioModel):
 
         if dados.username == usuario_existente['username']:
             raise HTTPException(
-                status_code=400,
+                status_code=409,
                 detail= f"Erro: Usuário de username {dados.username} já existe."
             )
 
