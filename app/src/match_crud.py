@@ -41,7 +41,7 @@ async def lista_match_grupo_por_usuario(id_usuario_base: int):
             except KeyError:
                 relacao_grupo_match = {grupo["nome"] : "0%"}
                 matchs_dict.update(relacao_grupo_match)
-                
+
         return matchs_dict
 
     except HTTPException as exception:

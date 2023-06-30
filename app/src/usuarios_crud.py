@@ -49,12 +49,14 @@ async def lista_usuario_por_username(
 
 @router.post("/criar-usuario")
 async def criar_usuario(dados: UsuarioModel):
-    """Cria um usuario
-        Assertiva de entrada: 
-            recebe as informações do UsuarioModel, sendo obrigatórios username e senha
-        Assertiva de saída:
-            retorna uma mensagem de sucesso caso o username não exista no sistema
-            caso o username exista, retorna 409 para username cadastrado
+    """
+        Cria um usuario
+        
+        Assertiva de entrada: recebe as informações do UsuarioModel,
+        sendo obrigatórios username e senha.
+
+        Assertiva de saída: retorna uma mensagem de sucesso caso o username não exista no sistema.
+        Caso o username exista, retorna (409) Conflict para username cadastrado.
     """
     usuarios = bancoAtlax.reference("/Usuarios").get()
     total_id = bancoAtlax.reference("/Usuarios/Total").child("num").get()
@@ -81,7 +83,8 @@ async def criar_usuario(dados: UsuarioModel):
 
 @router.put("/update/{id_usuario}")
 async def atualizar_usuario(id_usuario: int, dados: UsuarioUpdateModel):
-    """Atualiza o usuario
+    """
+    Atualiza o usuario
 
     Assertiva de entrada: id do usuário e json com os dados que deseja alterar,
      excluindo username e id
@@ -118,7 +121,14 @@ async def atualizar_usuario(id_usuario: int, dados: UsuarioUpdateModel):
 
 @router.delete("/deletar-usuario/{username}")
 async def deletar_usuario(username: str):
-    """Deleta um usuario"""
+    """
+    Deleta um usuario
+    
+    Assertiva de entrada: username do usuário para deletar
+
+    Assertiva de saída: confirmação da deleção do usuário ou erro (404) Not Found.
+
+    """
     if username is None:
         raise exceptions.ERRO_CAMPO
 

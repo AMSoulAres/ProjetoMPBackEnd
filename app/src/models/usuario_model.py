@@ -16,7 +16,7 @@ class UsuarioModel(BaseModel): # pylint: disable=too-few-public-methods
     grupos: Optional[list] = []
 
 class UsuarioUpdateModel(BaseModel): # pylint: disable=too-few-public-methods
-    """Modelo de Usuario"""
+    """Modelo de Update de Usuario"""
     senha: Optional[int]
     admin: Optional[int] = 0
     preferencias: Optional[list]
