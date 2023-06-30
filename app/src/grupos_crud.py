@@ -331,5 +331,3 @@ async def deletar_grupo(nome_grupo: str, username: str):
         status_code=404,
         detail="Grupo não encontrado."
     )
-
-

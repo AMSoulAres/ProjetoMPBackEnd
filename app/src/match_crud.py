@@ -4,6 +4,7 @@ from fastapi.exceptions import HTTPException
 from app.src.config_db import bancoAtlax
 from app.src.utils.busca_usuario import busca_usuario_id
 from app.algoritmo_match import match_lists
+from app.src.models.match_models import MatchUsuarioModel, MatchUsuarioGrupoModel
 
 router = APIRouter(
     prefix="/Match",
@@ -13,7 +14,8 @@ router = APIRouter(
 
 # EU 5 - Interação com Grupos e Usuários
 
-@router.get("/lista-match-grupo-por-usuario/{id_usuario_base}")
+@router.get("/lista-match-grupo-por-usuario/{id_usuario_base}",
+             response_model=MatchUsuarioGrupoModel)
 async def lista_match_grupo_por_usuario(id_usuario_base: int):
     """
     Lista os matchs entre um usuário e os grupos existentes
@@ -47,7 +49,7 @@ async def lista_match_grupo_por_usuario(id_usuario_base: int):
     except HTTPException as exception:
         raise exception
 
-@router.get("/lista-match-usuarios-por-usuario/{id_usuario_base}")
+@router.get("/lista-match-usuarios-por-usuario/{id_usuario_base}", response_model=MatchUsuarioModel)
 async def lista_match_usuarios_por_usuario(id_usuario_base: int):
     """
     Lista os matchs entre o usuario especificado e os usuarios existentes

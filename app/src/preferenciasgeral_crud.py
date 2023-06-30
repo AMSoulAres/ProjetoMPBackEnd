@@ -98,7 +98,7 @@ async def lista_preferencias():
     preferencias = bancoAtlax.reference("/Preferencias").get()
     for key, preferencia in preferencias.items():
         if key == "Total":
-            break
+            pass
 
         lista_preferencias.append(preferencia["NomePreferencias"])
 
