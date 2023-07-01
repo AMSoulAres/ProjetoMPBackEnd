@@ -7,24 +7,10 @@ from pydantic import BaseModel
 
 class MatchUsuarioGrupoModel(BaseModel):
     """Modelo json match de usuario com um grupo"""
-    idUsuario: int
-    idGrupo: int
-    match: float
+    nomeGrupo: str
+    match: str
 
 class MatchUsuarioModel(BaseModel):
     """Modelo json match de usuario com outro usuario"""
-    idUsuarioR: int
-    idUsuarioD: int
-    match: float
-
-class MatchUsuarioGrupoModelUpdate(BaseModel):
-    """Modelo json para atualização match de usuario com um grupo"""
-    idUsuarioR: Optional[int]
-    idGrupo: Optional[int]
-    match: Optional[float]
-
-class MatchUsuarioModelUpdate(BaseModel):
-    """Modelo json para atualização match de usuario com um grupo"""
-    idUsuarioR: Optional[int]
-    idUsuarioD: Optional[int]
-    match: Optional[float]
+    usernameUsuario: str
+    match: str

@@ -15,6 +15,7 @@ router = APIRouter(
 @router.post("/")
 def login_usuario(login_request: Login):
     """Função de login de usuario
+    
     Assertivas de entrada:
     Json no formato: {username: "string", password: "int"}
 

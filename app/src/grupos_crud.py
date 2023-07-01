@@ -4,8 +4,7 @@ from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
-from app.src.models.grupo_model import GrupoModel, GrupoUpdateModel
-from app.src.models.login_model import Login
+from app.src.models.grupo_model import GrupoModel
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
 from app.src.utils.busca_grupo import busca_grupo_id, busca_grupo_nome
@@ -332,5 +331,3 @@ async def deletar_grupo(nome_grupo: str, username: str):
         status_code=404,
         detail="Grupo não encontrado."
     )
-
-
