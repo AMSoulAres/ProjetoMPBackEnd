@@ -9,9 +9,16 @@ client = TestClient(app)
 
 def test_busca_mensagem_por_id_sucesso():
     """Teste"""
-    response = client.get("/ChatPrivado/buscar-mensagens/0/1")
+    response = client.get("/ChatPrivado/buscar-mensagens/5/3")
     assert response.status_code == 200
     assert response.json()
+
+def test_busca_mensagem_por_idR_erro():
+    """Teste"""
+    response = client.get("/ChatPrivado/buscar-mensagens/300/1")
+    assert response.status_code == 404
+    assert response.json()
+
 
 """ ------------------------- TESTE POST ------------------------- """
 
