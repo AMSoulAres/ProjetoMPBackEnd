@@ -18,8 +18,8 @@ router = APIRouter(
 # ------------------------- CREATE -------------------------
 
 
-@router.post("/criar-grupo/{username}")
-async def criar_grupo(dados: GrupoModel, username: str):
+@router.post("/add-grupo/{usr_name}")
+async def add_grupo(dados: GrupoModel, usr_name: str):
     """Cria um Grupo
     Assertivas de Entrada: Username do usuário, para checar
     se é admin, dados em formato json.
@@ -32,14 +32,14 @@ async def criar_grupo(dados: GrupoModel, username: str):
 
     admin = 0
     usuarios = bancoAtlax.reference("/Usuarios").get()
-    if username is None:
+    if usr_name is None:
         raise exceptions.ERRO_CAMPO
 
     for key, usuario in usuarios.items():
         if key == "Total":
             break
 
-        if username == usuario['username']:
+        if usr_name == usuario['username']:
             if usuario['id'] == 1:
                 admin = 1
     if admin == 0:
@@ -105,8 +105,8 @@ async def busca_grupos_por_id(id_grupo: int):
         raise exception
 
 
-@router.get("/busca-grupos-por-nome/{nome_grupo}")
-async def busca_grupos_por_nome(nome_grupo: str):
+@router.get("/busca-grupos-por-nome/{n_grupo}")
+async def busca_grupos_por_nome(n_grupo: str):
     """Busca Grupo por nome.
 
     Assertiva de entrada: Nome do grupo.
@@ -117,13 +117,13 @@ async def busca_grupos_por_nome(nome_grupo: str):
     'nome_grupo' não encontrado.)"""
     grupos = bancoAtlax.reference("/Grupos").get()
     try:
-        return busca_grupo_nome(nome_grupo, grupos)
+        return busca_grupo_nome(n_grupo, grupos)
 
     except HTTPException as exception:
         raise exception
 
 
-@router.get("/lista-grupos-por-preferencia/{preferencia}")
+@router.get("/list-grupos-pref/{preferencia}")
 async def lista_grupos_por_preferencia(preferencia: str):
     """Lista grupos por preferência.
 
@@ -151,8 +151,8 @@ async def lista_grupos_por_preferencia(preferencia: str):
     return resultado
 
 
-@router.get("/lista-membros/{nome_grupo}")
-async def grupo_lista_membros(nome_grupo: str):
+@router.get("/list-membros/{n_grupo}")
+async def grupo_lista_membros(n_grupo: str):
     """Lista membros de um grupo.
 
     Assertiva de entrada: Nome do grupo.
@@ -161,12 +161,12 @@ async def grupo_lista_membros(nome_grupo: str):
 
     Em caso de erro retorna 404(Grupo não encontrado.)."""
     grupos = bancoAtlax.reference("/Grupos").get()
-    if nome_grupo is None:
+    if n_grupo is None:
         raise exceptions.ERRO_CAMPO
     for key, grupo in grupos.items():
         if key == "Total":
             break
-        if nome_grupo == grupo['nome']:
+        if n_grupo == grupo['nome']:
             return grupo['membros']
     raise HTTPException(
         status_code=404,
@@ -177,8 +177,8 @@ async def grupo_lista_membros(nome_grupo: str):
 # ------------------------- UPDATE -------------------------
 
 
-@router.put("/atualizar-grupo/remover-membro/{usr_name}/{n_grupo}/{usr_del}")
-async def atualizar_grupo_remover_membro(usr_name: str, n_grupo: str,
+@router.put("/att-grupo/del-membro/{usr_name}/{n_grupo}/{usr_del}")
+async def atualizar_grupo_deletar_membro(usr_name: str, n_grupo: str,
                                          usr_del: str):
     """Remove um membro de um grupo.
 
@@ -221,15 +221,17 @@ async def atualizar_grupo_remover_membro(usr_name: str, n_grupo: str,
                 if membro == usr_del:
                     grupo['membros'].remove(usr_del)
                     grupo_att = grupo
-                    bancoAtlax.reference("/Grupos").child(str(key)).update(grupo_att)
-                    return bancoAtlax.reference("/Grupos").child(str(key)).get()
+                    bancoAtlax.reference("/Grupos").child(
+                        str(key)).update(grupo_att)
+                    return bancoAtlax.reference("/Grupos").child(
+                        str(key)).get()
             raise HTTPException(status_code=404,
                                 detail="Erro: Membro não encontrado.")
     raise HTTPException(status_code=404,
                         detail="Erro: Grupo não encontrado.")
 
 
-@router.put("/atualizar-grupo/adicionar-membro/{usr_name}/{n_grupo}/{usr_add}")
+@router.put("/att-grupo/add-membro/{usr_name}/{n_grupo}/{usr_add}")
 async def atualizar_grupo_adicionar_membro(usr_name: str, n_grupo: str,
                                            usr_add: str):
     """Adiciona um membro à um grupo.
@@ -286,8 +288,8 @@ async def atualizar_grupo_adicionar_membro(usr_name: str, n_grupo: str,
 # ------------------------- DELETE -------------------------
 
 
-@router.delete("/deletar-grupo/{username}/{nome_grupo}")
-async def deletar_grupo(nome_grupo: str, username: str):
+@router.delete("/del-grupo/{usr_name}/{n_grupo}")
+async def deletar_grupo(n_grupo: str, usr_name: str):
     """Deleta o grupo se o usuário for admin e o grupo for válido.
 
     Assertivas de Entrada: Nome do usuário, nome do grupo.
@@ -301,14 +303,14 @@ async def deletar_grupo(nome_grupo: str, username: str):
     usuarios = bancoAtlax.reference("/Usuarios").get()
     grupos = bancoAtlax.reference("/Grupos").get()
 
-    if username is None:
+    if usr_name is None:
         raise exceptions.ERRO_CAMPO
 
     for key, usuario in usuarios.items():
         if key == "Total":
             break
 
-        if username == usuario['username']:
+        if usr_name == usuario['username']:
             if usuario['id'] == 1:
                 admin = 1
     if admin == 0:
@@ -321,7 +323,7 @@ async def deletar_grupo(nome_grupo: str, username: str):
         if key == "Total":
             break
 
-        if nome_grupo == grupo['nome']:
+        if n_grupo == grupo['nome']:
             bancoAtlax.reference("/Grupos").child(str(key)).delete()
             return JSONResponse(
                 status_code=200,
