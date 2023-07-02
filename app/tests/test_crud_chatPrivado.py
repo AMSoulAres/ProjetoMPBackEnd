@@ -19,6 +19,11 @@ def test_busca_mensagem_por_idR_erro():
     assert response.status_code == 404
     assert response.json()
 
+def test_busca_mensagem_por_idR_erro():
+    """Teste"""
+    response = client.get("/ChatPrivado/buscar-mensagens/1/300")
+    assert response.status_code == 404
+    assert response.json()
 
 """ ------------------------- TESTE POST ------------------------- """
 
