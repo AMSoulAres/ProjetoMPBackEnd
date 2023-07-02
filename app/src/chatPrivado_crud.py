@@ -7,6 +7,7 @@ from app.src.models.chatPrivado_model import ChatPrivadoModel
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
 from datetime import datetime
+from app.src.utils.busca_usuario import busca_usuario_id
 
 router = APIRouter(
     prefix="/ChatPrivado",
@@ -16,16 +17,25 @@ router = APIRouter(
 
 @router.get("/buscar-mensagens/{idRUsuario}/{idDUsuario}")
 async def buscar_mensagens(idRUsuario: int, idDUsuario: int):
-    todasMensagens = bancoAtlax.reference('/ChatPrivado').get()
-    listaMensagens = []
+    
+    usuarios = bancoAtlax.reference("/Usuarios").get()
+    try:
+        busca_usuario_id(idRUsuario, usuarios)
+        todasMensagens = bancoAtlax.reference('/ChatPrivado').get()
+        listaMensagens = []
+        
+        
+        for key, mensagem in todasMensagens.items():
+            try:
+                if mensagem["idRUsuario"] == idDUsuario and mensagem["idDUsuario"] == idRUsuario or mensagem["idRUsuario"] == idRUsuario and mensagem["idDUsuario"] == idDUsuario:
+                    listaMensagens.append(mensagem)
+            except KeyError:
+                pass
+        return listaMensagens
 
-    for key, mensagem in todasMensagens.items():
-        try:
-            if mensagem["idRUsuario"] == idDUsuario and mensagem["idDUsuario"] == idRUsuario or mensagem["idRUsuario"] == idRUsuario and mensagem["idDUsuario"] == idDUsuario:
-                listaMensagens.append(mensagem)
-        except KeyError:
-            pass
-    return listaMensagens
+    except HTTPException as exception:
+        raise exception
+    
 
 
 @router.post("/enviar-mensagem/{idRUsuario}/{idDUsuario}")
