@@ -21,6 +21,7 @@ async def buscar_mensagens(idRUsuario: int, idDUsuario: int):
     usuarios = bancoAtlax.reference("/Usuarios").get()
     try:
         busca_usuario_id(idRUsuario, usuarios)
+        busca_usuario_id(idDUsuario, usuarios)
         todasMensagens = bancoAtlax.reference('/ChatPrivado').get()
         listaMensagens = []
         
