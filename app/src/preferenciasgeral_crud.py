@@ -13,8 +13,6 @@ router = APIRouter(
     responses={404: {"description": "Not Found"}}
 )
 
-
-
 """ ------------------------- CREATE -------------------------"""
 @router.post("/criar-preferencias/{username}")
 async def criar_preferencias(dados: PreferenciasGeralModel, username: str):
@@ -100,7 +98,7 @@ async def lista_preferencias():
         if key == "Total":
             pass
 
-        lista_preferencias.append(preferencia["NomePreferencias"])
+        lista_preferencias.append(preferencia)
 
     return lista_preferencias
 

@@ -13,4 +13,4 @@ Para rodar testes digitar "pytest -vv" e "pytest -vv --cov" para ver a cobertura
 
 Para rodar o Pylint e verificar código, rodar "Pylint ./app" ou rodar "make pylint"
 
-Para acessar documentação entrar em localhost:8080/docs ou localhost:8080/redocs
+Para acessar documentação entrar em localhost:8080/docs ou localhost:8080/redoc
