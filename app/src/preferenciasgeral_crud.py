@@ -11,7 +11,7 @@ router = APIRouter(
     responses={404: {"description": "Not Found"}}
 )
 
-@router.get("/lista-preferencias", response_model=Optional[PreferenciasGeralModel])
+@router.get("/lista-preferencias")
 async def get_lista_preferencias():
     """Lista Preferências Geral.
 
@@ -21,7 +21,7 @@ async def get_lista_preferencias():
     na base de dados.
     """
     preferencias = bancoAtlax.reference("/Preferencias").get()
-    return preferencias
+    return preferencias["preferencias"]
 
 @router.put("/atualiza-preferencias")
 async def update_preferencias(lista_preferencias: PreferenciasGeralModel):
