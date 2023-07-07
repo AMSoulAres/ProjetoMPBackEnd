@@ -1,5 +1,6 @@
 """Importando módulos básicos para conexão com DBcd"""
 import json
+from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
@@ -75,25 +76,32 @@ async def add_grupo(dados: GrupoModel, usr_name: str):
 # ------------------------- READ -------------------------
 
 
-@router.get("/lista-grupos")
+@router.get("/lista-grupos",
+            response_model=Optional[list[GrupoModel]])
 async def lista_grupos():
     """Lista Grupos.
 
-    Assertiva de entrada: /lista-grupos
+    Assertiva de entrada: Nenhum parâmetro.
 
-    Assertiva de saída: Grupos armazenados na base de dados."""
+    Assertiva de saída: Retorna grupos armazenados na base de dados."""
 
-    path = bancoAtlax.reference("/Grupos")
-    return path.get()
+    response = []
+    grupos = bancoAtlax.reference("/Grupos").get()
+    for key, grupo in grupos.items():
+        if key == "Total":
+            continue
+        response.append(grupo)
+    return response
 
 
-@router.get("/busca-grupos-por-id/{id_grupo}")
+@router.get("/busca-grupos-por-id/{id_grupo}",
+            response_model=Optional[GrupoModel])
 async def busca_grupos_por_id(id_grupo: int):
     """Busca Grupo por ID.
 
     Assertiva de entrada: ID do Grupo.
 
-    Assertiva de saída: Grupo procurado.
+    Assertiva de saída: Retorna o grupo com id igual.
 
     Em caso de erro retorna 404(Grupo de id 'id_grupo'
     não encontrado.)"""
@@ -105,7 +113,8 @@ async def busca_grupos_por_id(id_grupo: int):
         raise exception
 
 
-@router.get("/busca-grupos-por-nome/{n_grupo}")
+@router.get("/busca-grupos-por-nome/{n_grupo}",
+            response_model=Optional[GrupoModel])
 async def busca_grupos_por_nome(n_grupo: str):
     """Busca Grupo por nome.
 
@@ -123,7 +132,8 @@ async def busca_grupos_por_nome(n_grupo: str):
         raise exception
 
 
-@router.get("/list-grupos-pref/{preferencia}")
+@router.get("/list-grupos-pref/{preferencia}",
+            response_model=Optional[list[GrupoModel]])
 async def lista_grupos_por_preferencia(preferencia: str):
     """Lista grupos por preferência.
 
@@ -151,7 +161,8 @@ async def lista_grupos_por_preferencia(preferencia: str):
     return resultado
 
 
-@router.get("/list-membros/{n_grupo}")
+@router.get("/list-membros/{n_grupo}",
+            response_model=Optional[list[str]])
 async def grupo_lista_membros(n_grupo: str):
     """Lista membros de um grupo.
 
@@ -177,7 +188,8 @@ async def grupo_lista_membros(n_grupo: str):
 # ------------------------- UPDATE -------------------------
 
 
-@router.put("/att-grupo/del-membro/{usr_name}/{n_grupo}/{usr_del}")
+@router.put("/att-grupo/del-membro/{usr_name}/{n_grupo}/{usr_del}",
+            response_model=Optional[GrupoModel])
 async def atualizar_grupo_deletar_membro(usr_name: str, n_grupo: str,
                                          usr_del: str):
     """Remove um membro de um grupo.
@@ -231,7 +243,8 @@ async def atualizar_grupo_deletar_membro(usr_name: str, n_grupo: str,
                         detail="Erro: Grupo não encontrado.")
 
 
-@router.put("/att-grupo/add-membro/{usr_name}/{n_grupo}/{usr_add}")
+@router.put("/att-grupo/add-membro/{usr_name}/{n_grupo}/{usr_add}",
+            response_model=Optional[GrupoModel])
 async def atualizar_grupo_adicionar_membro(usr_name: str, n_grupo: str,
                                            usr_add: str):
     """Adiciona um membro à um grupo.

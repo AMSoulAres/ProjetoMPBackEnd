@@ -7,7 +7,7 @@ def busca_grupo_id(id_grupo, grupos):
     """Realiza busca de grupo por id
     Assertiva de entrada: id_grupo - id do grupo procurado
                           grupos - lista de grupos
-    Assertiva de saída: grupo - grupo encontrado ou erro 404 (NotFound)  
+    Assertiva de saída: grupo - grupo encontrado ou erro 404 (NotFound)
     """
     if id_grupo is None:
         raise exceptions.ERRO_CAMPO
@@ -29,7 +29,7 @@ def busca_grupo_nome(nome_grupo, grupos):
     """Realiza busca de grupo por nome
     Assertiva de entrada: nome - nome do grupo procurado
                           grupos - lista de grupo
-    Assertiva de saída: grupo - grupo encontrado ou erro 404 (NotFound)  
+    Assertiva de saída: grupo - grupo encontrado ou erro 404 (NotFound)
     """
     if nome_grupo is None:
         raise exceptions.ERRO_CAMPO
