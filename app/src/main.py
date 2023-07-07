@@ -7,6 +7,7 @@ import app.src.match_crud as match_API
 import app.src.grupos_crud as grupos_API
 import app.src.chatPrivado_crud as chatPrivado_API
 import app.src.preferenciasgeral_crud as preferencias_API
+import app.src.relatorio as relatorio
 
 
 app = FastAPI()
@@ -33,3 +34,4 @@ app.include_router(match_API.router)
 app.include_router(grupos_API.router)
 app.include_router(chatPrivado_API.router)
 app.include_router(preferencias_API.router)
+app.include_router(relatorio.router)

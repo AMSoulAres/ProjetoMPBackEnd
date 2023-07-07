@@ -31,7 +31,7 @@ async def lista_usuarios():
     for key, usuario in usuarios.items():
         if key == "Total":
             continue
-        
+
         response.append(usuario)
 
     return response

@@ -1,4 +1,5 @@
 """Importando módulos básicos para conexão com DBcd"""
+import json
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
@@ -36,8 +37,7 @@ def login_usuario(login_request: Login):
 
         if login_request.username == usuario["username"]:
             if login_request.senha == usuario["senha"]:
-                return JSONResponse(status_code=200,
-                                    content={"message": "sucesso"})
+                return usuario
             raise HTTPException(status_code=403,
                                     detail= {"message": "Senha inválida"})
     raise HTTPException(status_code=404,
