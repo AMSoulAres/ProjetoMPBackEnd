@@ -5,7 +5,7 @@ from app.src.main import app
 
 client = TestClient(app)
 
-""" ------------------------- TESTE GET -------------------------  """
+# ------------------------- TESTE GET ------------------------- 
 
 
 def test_busca_mensagem_por_id_sucesso():
@@ -21,19 +21,22 @@ def test_busca_mensagem_idR_erro():
     assert response.status_code == 404
     assert response.json()
 
+
 def test_busca_mensagem_idD_erro():
     """Teste"""
     response = client.get("/ChatPrivado/buscar-mensagens/1/300")
     assert response.status_code == 404
     assert response.json()
- 
+
+
 def test_busca_mensagem_ids_erro():
     """Teste"""
     response = client.get("/ChatPrivado/buscar-mensagens/200/300")
     assert response.status_code == 404
     assert response.json()
 
-""" ------------------------- TESTE POST ------------------------- """
+# ------------------------- TESTE POST -------------------------
+
 
 def test_cria_chat_sucesso():
     """Teste"""
@@ -45,7 +48,8 @@ def test_cria_chat_sucesso():
     assert response.json() == {
         "message": "Mensagem enviada com sucesso!"
     }
-    
+
+
 def test_cria_chat_idR_erro():
     """Teste"""
     response = client.post("/ChatPrivado/enviar-mensagem/300/1",
@@ -57,6 +61,7 @@ def test_cria_chat_idR_erro():
         "detail": "Erro: Usuário de id 300 não encontrado."
     }
 
+
 def test_cria_chat_idD_erro():
     """Teste"""
     response = client.post("/ChatPrivado/enviar-mensagem/1/300",
@@ -67,6 +72,7 @@ def test_cria_chat_idD_erro():
     assert response.json() == {
         "detail": "Erro: Usuário de id 300 não encontrado."
     }
+
 
 def test_cria_chat_ids_erro():
     """Teste"""
