@@ -17,8 +17,22 @@ router = APIRouter(
 
 grupos_mensagens = {}
 
+""" ------------------------- READ -------------------------"""
 @router.get("/grupos_mensagens/{idGrupo}/mensagens/")
 async def buscar_grupo_message(idGrupo: int):
-  if idGrupo not in grupos_mensagens:
-    grupos_mensagens[idGrupo] = []
-  return grupos_mensagens[idGrupo] 
+    """Busca mensagens existentes no grupo
+
+    Assertiva de entrada: id do grupo.
+
+    Assertiva de saída:Retorna as mensagens do idgrupo.
+    """
+    grupos = bancoAtlax.reference("/Grupos").get()
+
+    try:
+        busca_grupo_id(idGrupo, grupos)
+        if idGrupo not in grupos_mensagens:
+            grupos_mensagens[idGrupo] = []
+        return grupos_mensagens[idGrupo] 
+     
+    except HTTPException as exception:
+        raise exception
