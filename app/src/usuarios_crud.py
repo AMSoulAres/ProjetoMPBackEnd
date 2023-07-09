@@ -7,7 +7,8 @@ from fastapi.exceptions import HTTPException
 from app.src.models.usuario_model import UsuarioModel, UsuarioUpdateModel
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
-from app.src.utils.busca_usuario import busca_usuario_id, busca_usuario_username
+from app.src.utils.busca_usuario import busca_usuario_id
+from app.src.utils.busca_usuario import busca_usuario_username
 
 router = APIRouter(
     prefix="/Usuarios",
@@ -16,6 +17,7 @@ router = APIRouter(
 )
 
 # EU 1 - Recomendação de Grupos e Usuários
+
 
 @router.get("/lista-usuarios", response_model=Optional[list[UsuarioModel]])
 async def lista_usuarios():
@@ -26,7 +28,7 @@ async def lista_usuarios():
     Assertivas de saída: Coleta os usuários no banco de dados
         Retorna uma lista com as informações de todos o usuários
     """
-    response =  []
+    response = []
     usuarios = bancoAtlax.reference("/Usuarios").get()
     for key, usuario in usuarios.items():
         if key == "Total":
@@ -36,7 +38,9 @@ async def lista_usuarios():
 
     return response
 
-@router.get("/lista-usuario-por-id/{id_usuario}", response_model=Optional[UsuarioModel])
+
+@router.get("/lista-usuario-por-id/{id_usuario}",
+            response_model=Optional[UsuarioModel])
 async def lista_usuario_por_id(
         id_usuario: int
         ):
@@ -44,7 +48,7 @@ async def lista_usuario_por_id(
 
     Assertivas de entrada:  id do usuário a ser procurado
 
-    Assertivas de saída: Faz uma busca pelo id no banco de dados 
+    Assertivas de saída: Faz uma busca pelo id no banco de dados
         Retorna as informações do usuário
         Em caso de erro retorna 404 Not Found
     """
@@ -55,7 +59,9 @@ async def lista_usuario_por_id(
     except HTTPException as exception:
         raise exception
 
-@router.get("/lista-usuario-por-username/{username}", response_model=Optional[UsuarioModel])
+
+@router.get("/lista-usuario-por-username/{username}",
+            response_model=Optional[UsuarioModel])
 async def lista_usuario_por_username(
         username: str
         ):
@@ -63,7 +69,7 @@ async def lista_usuario_por_username(
 
     Assertivas de entrada:  username do usuário a ser procurado
 
-    Assertivas de saída: Faz uma busca pelo username no banco de dados 
+    Assertivas de saída: Faz uma busca pelo username no banco de dados
         Retorna as informações do usuário
         Em caso de erro retorna 404 Not Found
     """
@@ -74,20 +80,24 @@ async def lista_usuario_por_username(
     except HTTPException as exception:
         raise exception
 
-@router.post("/criar-usuario", response_model=Optional[UsuarioModel])
+
+@router.post("/criar-usuario",
+             response_model=Optional[UsuarioModel])
 async def criar_usuario(dados: UsuarioModel):
     """
         Cria um usuario
-        
+
         Assertiva de entrada: recebe as informações do UsuarioModel,
         sendo obrigatórios username e senha.
 
-        Assertiva de saída: retorna uma mensagem de sucesso caso o username não exista no sistema.
-        Caso o username exista, retorna (409) Conflict para username cadastrado.
+        Assertiva de saída: retorna uma mensagem de sucesso caso o username não
+        exista no sistema.
+        Caso o username exista, retorna (409)
+        Conflict para username cadastrado.
     """
     usuarios = bancoAtlax.reference("/Usuarios").get()
     total_id = bancoAtlax.reference("/Usuarios/Total").child("num").get()
-    dados.id = total_id + 1 # incrementa id
+    dados.id = total_id + 1  # incrementa id
     body = json.loads(dados.json())
 
     for key, usuario_existente in usuarios.items():
@@ -97,16 +107,17 @@ async def criar_usuario(dados: UsuarioModel):
         if dados.username == usuario_existente['username']:
             raise HTTPException(
                 status_code=409,
-                detail= f"Erro: Usuário de username {dados.username} já existe."
+                detail=f"Erro: Usuário de username {dados.username} já existe."
             )
 
     bancoAtlax.reference("/Usuarios").push(body)
-    bancoAtlax.reference("/Usuarios").child("Total").update({"num" : dados.id})
+    bancoAtlax.reference("/Usuarios").child("Total").update({"num": dados.id})
 
     return JSONResponse(
         status_code=201,
-        content={"message" : "Usuário adicionado com sucesso!"}
+        content={"message": "Usuário adicionado com sucesso!"}
     )
+
 
 @router.put("/update/{id_usuario}", response_model=Optional[UsuarioModel])
 async def atualizar_usuario(id_usuario: int, dados: UsuarioUpdateModel):
@@ -119,7 +130,8 @@ async def atualizar_usuario(id_usuario: int, dados: UsuarioUpdateModel):
     Assertiva de saída: o usuario é atualizado no banco e retornado na resposta
     em caso de sucesso.
 
-    Em caso de erro, são retornado 400 (senha inválida), 404 (Usuário não encontrado)
+    Em caso de erro, são retornado 400 (senha inválida), 404
+    (Usuário não encontrado)
 
     """
     usuarios = bancoAtlax.reference("/Usuarios").get()
@@ -135,25 +147,27 @@ async def atualizar_usuario(id_usuario: int, dados: UsuarioUpdateModel):
             usuario_armazenado = usuario
             modelo_usuario = UsuarioModel(**usuario_armazenado)
 
-            #Exclui os campos não preenchidos do modelo para não atualizar
-            dados_atualizados = dados.dict(exclude_unset=True)
-            usuario_atualizado = json.loads(modelo_usuario.copy(update=dados_atualizados).json())
+            # Exclui os campos não preenchidos do modelo para não atualizar
+            dados_att = dados.dict(exclude_unset=True)
+            user_att = json.loads(modelo_usuario.copy(update=dados_att).json())
 
-            #Atualiza os dados
-            bancoAtlax.reference("/Usuarios").child(str(key)).update(usuario_atualizado)
+            # Atualiza os dados
+            bancoAtlax.reference("/Usuarios").child(str(key)).update(user_att)
 
             return bancoAtlax.reference("/Usuarios").child(str(key)).get()
     raise HTTPException(status_code=404,
-                        detail= {"message": "Usuario não encontrado"})
+                        detail={"message": "Usuario não encontrado"})
+
 
 @router.delete("/deletar-usuario/{username}")
 async def deletar_usuario(username: str):
     """
     Deleta um usuario
-    
+
     Assertiva de entrada: username do usuário para deletar
 
-    Assertiva de saída: confirmação da deleção do usuário ou erro (404) Not Found.
+    Assertiva de saída: confirmação da deleção do usuário ou erro
+    (404) Not Found.
 
     """
     if username is None:

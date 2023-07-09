@@ -25,4 +25,10 @@ Total de Grupos cadastrados: 4
 Total de de mensagens privadas enviadas: 6Total de usuários cadastrados: 18
 Total de preferencias cadastradas: 6
 Total de Grupos cadastrados: 4
-Total de de mensagens privadas enviadas: 7
+Total de de mensagens privadas enviadas: 7Total de usuários cadastrados: 19
+Total de preferencias cadastradas: 7
+Total de Grupos cadastrados: 4
+Total de de mensagens privadas enviadas: 9Total de usuários cadastrados: 19
+Total de preferencias cadastradas: 7
+Total de Grupos cadastrados: 4
+Total de de mensagens privadas enviadas: 10
