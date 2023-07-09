@@ -18,3 +18,9 @@ def test_busca_mensagem_idgrupo_erro():
     response = client.get("/ChatGrupo/grupos_mensagens/1000000/mensagens/")
     assert response.status_code == 404
     assert response.json()
+
+def test_usuario_no_grupo():
+    """Teste"""
+    response = client.get("/ChatGrupo/usuario_grupo/254/5/")
+    assert response.status_code == 404
+    assert response.json()
