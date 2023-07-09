@@ -30,3 +30,14 @@ def test_enviar_grupo_menssage():
     response = client.post("/grupos_mensagens/254/5/", {"id": 5, "timestamp":"string", "mensagem": "Olá!"})
     assert response.status_code == 200
     assert response.json() == {'mensagem enviada com sucesso!'}
+
+def test_atualizar_existencia_grupo():
+    # Teste para verificar se o grupo é atualizado com sucesso.
+    response = client.put("/grupos/1/")
+    assert response.status_code == 200
+    assert response.json() == grupos_mensagens[1]
+    
+    # Teste para verificar se o grupo é excluído com sucesso.
+    response = client.put("/grupos/2/")
+    assert response.status_code == 404
+    assert response.json() == {'detail': 'Erro: Grupo não existe mais.'}
