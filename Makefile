@@ -1,5 +1,5 @@
 all:
-	python -m uvicorn --port 8080 app.src.main:app --reload
+	python -m uvicorn --port 8000 app.src.main:app --reload
 
 test:
 	pytest -vv --cov

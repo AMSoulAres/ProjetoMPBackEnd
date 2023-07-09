@@ -33,8 +33,10 @@ async def buscar_mensagens(idRUsuario: int, idDUsuario: int):
             try:
                 if mensagem["idRUsuario"] == idDUsuario and mensagem["idDUsuario"] == idRUsuario or mensagem["idRUsuario"] == idRUsuario and mensagem["idDUsuario"] == idDUsuario:
                     listaMensagens.append(mensagem)
+                
             except KeyError:
                 pass
+        sorted_list = sorted(listaMensagens, key=lambda k: k["timestamp"])
         return listaMensagens
 
     except HTTPException as exception:
@@ -44,18 +46,16 @@ async def buscar_mensagens(idRUsuario: int, idDUsuario: int):
 """ ------------------------- CREATE -------------------------"""
 
 
-@router.post("/enviar-mensagem/{idRUsuario}/{idDUsuario}")
-async def enviar_mensagem(dados: ChatPrivadoModel, idRUsuario: int, idDUsuario: int):
+@router.post("/enviar-mensagem")
+async def enviar_mensagem(dados: ChatPrivadoModel):
 
     usuarios = bancoAtlax.reference("/Usuarios").get()
     try:
-        busca_usuario_id(idRUsuario, usuarios)
-        busca_usuario_id(idDUsuario, usuarios)
+        busca_usuario_id(dados.idRUsuario, usuarios)
+        busca_usuario_id(dados.idDUsuario, usuarios)
         total_id = bancoAtlax.reference("/ChatPrivado/Total").child("num").get()
         body = json.loads(dados.json())
-        body["idRUsuario"] = idRUsuario
-        body["idDUsuario"] = idDUsuario
-        body["timestamp"] = str(datetime.now()) if body["timestamp"] == None else body["timestamp"]
+        body["timestamp"] = datetime.now()
         
         bancoAtlax.reference("/ChatPrivado").push(body)
         bancoAtlax.reference("/ChatPrivado").child("Total").update({"num": total_id + 1})

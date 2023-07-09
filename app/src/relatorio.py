@@ -1,10 +1,7 @@
 """Importando módulos básicos para conexão com DBcd"""
-from typing import Optional
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
 from app.src.utils.busca_usuario import busca_usuario_id
-from app.src.models.preferenciasgeral_model import PreferenciasGeralModel
 from app.src.config_db import bancoAtlax
 
 router = APIRouter(
@@ -35,14 +32,15 @@ async def relatorio(id_usuario: int):
         total_preferencias = len(bancoAtlax.reference("/Preferencias").get()["preferencias"])
         grupos = bancoAtlax.reference("/Grupos").get()
 
-        for key, grupo in grupos.items():
+        for key in grupos.items():
             total_grupos += 1
         
-        todasMensagens = bancoAtlax.reference('/ChatPrivado').get()       
-        for key, mensagem in todasMensagens.items():
+        todas_mensagens = bancoAtlax.reference('/ChatPrivado').get()       
+        for key in todas_mensagens.items():
             total_chat_privado += 1
         
         with open("relatorio.txt", "a") as arquivo:
+            arquivo.truncate(4)
             lines = f"Total de usuários cadastrados: {total_usuarios}\n"    
             lines += f"Total de preferencias cadastradas: {total_preferencias}\n"
             lines += f"Total de Grupos cadastrados: {total_grupos}\n"
