@@ -9,6 +9,7 @@ router = APIRouter(
     tags=["Relatório"]
 )
 
+
 @router.get("/{id_usuario}")
 async def relatorio(id_usuario: int):
     """
@@ -38,7 +39,7 @@ async def relatorio(id_usuario: int):
         todas_mensagens = bancoAtlax.reference('/ChatPrivado').get()       
         for key in todas_mensagens.items():
             total_chat_privado += 1
-        
+
         with open("relatorio.txt", "a") as arquivo:
             arquivo.truncate(4)
             lines = f"Total de usuários cadastrados: {total_usuarios}\n"    

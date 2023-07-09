@@ -13,16 +13,19 @@ router = APIRouter(
 
 # EU 5 - Interação com Grupos e Usuários
 
+
 @router.get("/lista-match-grupo-por-usuario/{id_usuario_base}")
 async def lista_match_grupo_por_usuario(id_usuario_base: int):
     """
     Lista os matchs entre um usuário e os grupos existentes
 
-    Assertiva de entrada: um id de usuario para fazer as comparações entre grupos
+    Assertiva de entrada: um id de usuario para fazer as comparações entre
+    grupos.
 
-    Assertiva de saída: retorna dicionário com a relação entre os usuario especificado
-    e os grupos existentes, (404) Not Found, quando o usuario não é encontrado,
-    ou (500) Internal Server Error, quando ocorre algum erro no banco de dados
+    Assertiva de saída: retorna dicionário com a relação entre os usuario
+    especificado e os grupos existentes, (404) Not Found, quando o usuario
+    não é encontrado, ou (500) Internal Server Error, quando ocorre algum
+    erro no banco de dados.
     """
     usuarios = bancoAtlax.reference("/Usuarios").get()
     grupos = bancoAtlax.reference("/Grupos").get()
@@ -34,12 +37,13 @@ async def lista_match_grupo_por_usuario(id_usuario_base: int):
             if key == "Total":
                 break
             try:
-                match = match_lists(grupo["preferencias"], usuario_base["preferencias"])
+                match = match_lists(grupo["preferencias"],
+                                    usuario_base["preferencias"])
                 match_porcentagem = f"{match:.2%}"
-                relacao_grupo_match = {grupo["nome"] : match_porcentagem}
+                relacao_grupo_match = {grupo["nome"]: match_porcentagem}
                 matchs_dict.update(relacao_grupo_match)
             except KeyError:
-                relacao_grupo_match = {grupo["nome"] : "0%"}
+                relacao_grupo_match = {grupo["nome"]: "0%"}
                 matchs_dict.update(relacao_grupo_match)
 
         return matchs_dict
@@ -47,16 +51,19 @@ async def lista_match_grupo_por_usuario(id_usuario_base: int):
     except HTTPException as exception:
         raise exception
 
+
 @router.get("/lista-match-usuarios-por-usuario/{id_usuario_base}")
 async def lista_match_usuarios_por_usuario(id_usuario_base: int):
     """
     Lista os matchs entre o usuario especificado e os usuarios existentes
 
-    Assertiva de entrada: um id de usuario para fazer as comparações entre grupos
-    
-    Assertiva de saída: retorna dicionário com a relação entre os usuario especificado
-    e os usuarios existentes, (404) Not Found, quando o usuario não é encontrado,
-    ou (500) Internal Server Error, quando ocorre algum erro no banco de dados
+    Assertiva de entrada: um id de usuario para fazer as comparações entre
+    grupos.
+
+    Assertiva de saída: retorna dicionário com a relação entre os usuario
+    especificado e os usuarios existentes, (404) Not Found, quando o
+    usuario não é encontrado, ou (500) Internal Server Error, quando
+    ocorre algum erro no banco de dados.
 
     """
     usuarios = bancoAtlax.reference("/Usuarios").get()
@@ -72,10 +79,10 @@ async def lista_match_usuarios_por_usuario(id_usuario_base: int):
                 try:
                     match = match_lists(usuario["preferencias"], usuario_base["preferencias"])
                     match_porcentagem = f"{match:.2%}"
-                    relacao_usuario_match = {usuario["username"] : match_porcentagem}
+                    relacao_usuario_match = {usuario["username"]: match_porcentagem}
                     matchs_dict.update(relacao_usuario_match)
                 except KeyError:
-                    relacao_usuario_match = {usuario["username"] : "0%"}
+                    relacao_usuario_match = {usuario["username"]: "0%"}
                     matchs_dict.update(relacao_usuario_match)
 
         return matchs_dict
