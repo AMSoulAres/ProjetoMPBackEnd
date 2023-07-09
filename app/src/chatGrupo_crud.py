@@ -36,3 +36,31 @@ async def buscar_grupo_message(idGrupo: int):
      
     except HTTPException as exception:
         raise exception
+        
+
+
+@router.get("/usuario_grupo/{idGrupo}/{idUsuario}/")
+async def usuario_no_grupo(idGrupo: int, idUsuario: int):
+    """Verificar se idUsuario é um membro do grupo.
+
+    Assertiva de entrada: id do grupo, e id do usuario.
+
+    Assertiva de saída: Retorna um erro se o usuario não tiver no grupo, e True se tiver."""
+
+    grupos = bancoAtlax.reference("/Grupos").get()
+    usuarios = bancoAtlax.reference("/Usuarios").get()
+
+    try:
+        busca_grupo_id(idGrupo, grupos)
+        busca_usuario_id(idUsuario, usuarios)
+
+        usuario = busca_usuario_id(idUsuario, usuarios)
+        grupo = busca_grupo_id(idGrupo, grupos)
+        membros_grupo = grupo["membros"]
+        nome_usuario = usuario["username"]
+        
+        if nome_usuario not in membros_grupo:
+            raise HTTPException(status_code=404, detail="Erro: O usuário não pode enviar mensagem, pois não está no grupo.")
+        return True
+    except HTTPException as exception:
+        raise exception  
