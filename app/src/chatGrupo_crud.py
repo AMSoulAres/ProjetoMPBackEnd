@@ -63,4 +63,42 @@ async def usuario_no_grupo(idGrupo: int, idUsuario: int):
             raise HTTPException(status_code=404, detail="Erro: O usuário não pode enviar mensagem, pois não está no grupo.")
         return True
     except HTTPException as exception:
-        raise exception  
+        raise exception
+
+""" ------------------------- CREATE -------------------------"""
+
+@router.post("/grupos_mensagens/{idGrupo}/{idUsuario}/", response_model=MensagemModel)
+async def enviar_grupo_menssage(idGrupo: int, idUsuario:int, Mensagens: MensagemModel):
+    """ Enviar mensagem para o grupo
+
+    Assertiva de entrada: id do grupo,id do usuario, e modelo de dados armazenados em MensagemModel.
+
+    Assertiva de saída:Retorna uma mensagem de sucesso caso a mensagem seja enviada."""
+
+    grupos = bancoAtlax.reference("/Grupos").get()
+    usuarios = bancoAtlax.reference("/Usuarios").get()
+
+    try:
+        
+        busca_grupo_id(idGrupo, grupos)
+        busca_usuario_id(idUsuario, usuarios)
+        usuario_no_grupo(idGrupo, idUsuario)
+
+        if idGrupo not in grupos_mensagens:
+            grupos_mensagens[idGrupo] = []
+
+        total_id = bancoAtlax.reference("/ChatGrupo/Total").child("num").get()
+
+        Mensagens.timestamp = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        Mensagens.idUsuario = idUsuario
+        grupos_mensagens[idGrupo].append(Mensagens)
+        grupos_mensagens[idGrupo] = sorted(grupos_mensagens[idGrupo], key=lambda x: x['timestamp'])
+        
+        bancoAtlax.reference("/ChatGrupo").child("Total").update({"num": total_id + 1})
+        return {'mensagem enviada com sucesso!'}
+
+    except HTTPException as exception:
+        raise exception    
+        
+    
+
