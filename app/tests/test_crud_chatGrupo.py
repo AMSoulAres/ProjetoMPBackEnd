@@ -24,3 +24,9 @@ def test_usuario_no_grupo():
     response = client.get("/ChatGrupo/usuario_grupo/254/5/")
     assert response.status_code == 404
     assert response.json()
+
+def test_enviar_grupo_menssage():
+    """Teste"""
+    response = client.post("/grupos_mensagens/254/5/", {"id": 5, "timestamp":"string", "mensagem": "Olá!"})
+    assert response.status_code == 200
+    assert response.json() == {'mensagem enviada com sucesso!'}
