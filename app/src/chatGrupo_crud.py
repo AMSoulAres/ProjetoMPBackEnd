@@ -99,6 +99,25 @@ async def enviar_grupo_menssage(idGrupo: int, idUsuario:int, Mensagens: Mensagem
 
     except HTTPException as exception:
         raise exception    
-        
+
+"------------------------UPDATE--------------------------------"
+
+@router.put("/grupos/{idGrupo}/", response_model=MensagemModel)
+async def atualizar_existencia_grupo(idGrupo: int):
+    """Atualizar dados do idgrupo
+    
+    Assertiva de entrada: id do grupo, .
+
+    Assertiva de saída: Se idgrupo existir, retorne as mensagens, ao contrário apague o grupo de mensagens."""
+    grupos = bancoAtlax.reference("/Grupos").get()
+    try:
+        busca_grupo_id(idGrupo, grupos)
+        return grupos_mensagens[idGrupo]
+    
+    except:
+        if idGrupo in grupos_mensagens:
+            grupos_mensagens[idGrupo] = []
+            bancoAtlax.reference("/ChatGrupo").child(str(idGrupo)).delete()
+        raise HTTPException(status_code=404, detail="Erro: Grupo não existe mais.")
     
 
