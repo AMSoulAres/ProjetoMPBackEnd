@@ -12,3 +12,9 @@ def test_busca_mensagem_por_id_sucesso():
     response = client.get("/ChatGrupo/grupos_mensagens/1/mensagens/")
     assert response.status_code == 404
     assert response.json()
+
+def test_busca_mensagem_idgrupo_erro():
+    """Teste"""
+    response = client.get("/ChatGrupo/grupos_mensagens/1000000/mensagens/")
+    assert response.status_code == 404
+    assert response.json()
