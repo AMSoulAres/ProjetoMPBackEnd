@@ -8,6 +8,7 @@ from app.src.models.grupo_model import GrupoModel
 from app.src.config_db import bancoAtlax
 from app.src import exceptions
 from app.src.utils.busca_grupo import busca_grupo_id, busca_grupo_nome
+from app.src.utils.busca_usuario import busca_usuario_username
 
 router = APIRouter(
     prefix="/Grupos",
@@ -188,23 +189,19 @@ async def grupo_lista_membros(n_grupo: str):
 # ------------------------- UPDATE -------------------------
 
 
-@router.put("/att-grupo/del-membro/{usr_name}/{n_grupo}/{usr_del}",
+@router.put("/att-grupo/del-membro/{n_grupo}/{usr_name}",
             response_model=Optional[GrupoModel])
-async def atualizar_grupo_deletar_membro(usr_name: str, n_grupo: str,
-                                         usr_del: str):
+async def atualizar_grupo_deletar_membro(n_grupo: str, usr_name: str):
     """Remove um membro de um grupo.
 
-    Assertiva de entrada: username do usuario, nome do grupo, username do
-    usuario à ser removido.
+    Assertiva de entrada: username do usuario a ser removido, nome do grupo.
 
     Assertiva de saída: o grupo é atualizado no banco e retornado na resposta
     em caso de sucesso.
 
     Em caso de erro retorna 404(Usuário não encontrado.),
-    404(Grupo não encontrado.), 401(Usuário não é admin.).
+    404(Grupo não encontrado.).
     """
-    admin = 0
-    usuarios = bancoAtlax.reference("/Usuarios").get()
     grupos = bancoAtlax.reference("/Grupos").get()
 
     if usr_name is None:
@@ -212,26 +209,14 @@ async def atualizar_grupo_deletar_membro(usr_name: str, n_grupo: str,
     if n_grupo is None:
         raise exceptions.ERRO_CAMPO
 
-    for key, usuario in usuarios.items():
-        if key == "Total":
-            break
-
-        if usr_name == usuario['username']:
-            if usuario['id'] == 1:
-                admin = 1
-    if admin == 0:
-        raise HTTPException(
-            status_code=401,
-            detail="Erro: Usuário não é admin."
-        )
     for key, grupo in grupos.items():
         if key == "Total":
             break
 
         if n_grupo == grupo['nome']:
             for membro in grupo['membros']:
-                if membro == usr_del:
-                    grupo['membros'].remove(usr_del)
+                if membro == usr_name:
+                    grupo['membros'].remove(usr_name)
                     grupo_att = grupo
                     bancoAtlax.reference("/Grupos").child(
                         str(key)).update(grupo_att)
@@ -243,54 +228,40 @@ async def atualizar_grupo_deletar_membro(usr_name: str, n_grupo: str,
                         detail="Erro: Grupo não encontrado.")
 
 
-@router.put("/att-grupo/add-membro/{usr_name}/{n_grupo}/{usr_add}",
+@router.put("/att-grupo/add-membro/{n_grupo}/{usr_name}/",
             response_model=Optional[GrupoModel])
-async def atualizar_grupo_adicionar_membro(usr_name: str, n_grupo: str,
-                                           usr_add: str):
+async def atualizar_grupo_adicionar_membro(n_grupo: str, usr_name: str,):
     """Adiciona um membro à um grupo.
 
-    Assertiva de entrada: username do usuario, nome do grupo, username do
-    usuario à ser adicionado.
+    Assertiva de entrada: nome do grupo, username do usuario à ser adicionado.
 
     Assertiva de saída: o grupo é atualizado no banco e retornado na resposta
     em caso de sucesso.
 
     Em caso de erro retorna 404(Grupo não encontrado.), 409(Membro já
-    registrado no grupo.), 401(Usuário não é admin.).
+    registrado no grupo.), 404(Usuário não encontrado).
     """
-    admin = 0
     usuarios = bancoAtlax.reference("/Usuarios").get()
     grupos = bancoAtlax.reference("/Grupos").get()
+    busca_usuario_username(usr_name, usuarios)
 
     if usr_name is None:
         raise exceptions.ERRO_CAMPO
     if n_grupo is None:
         raise exceptions.ERRO_CAMPO
 
-    for key, usuario in usuarios.items():
-        if key == "Total":
-            break
-
-        if usr_name == usuario['username']:
-            if usuario['id'] == 1:
-                admin = 1
-    if admin == 0:
-        raise HTTPException(
-            status_code=401,
-            detail="Erro: Usuário não é admin."
-        )
     for key, grupo in grupos.items():
         if key == "Total":
             break
 
         if n_grupo == grupo['nome']:
             for membro in grupo['membros']:
-                if membro == usr_add:
+                if membro == usr_name:
                     raise HTTPException(
                         status_code=409,
                         detail="Erro: Membro já registrado no grupo."
                     )
-            grupo['membros'].append(usr_add)
+            grupo['membros'].append(usr_name)
             grupo_att = grupo
             bancoAtlax.reference("/Grupos").child(str(key)).update(grupo_att)
             return bancoAtlax.reference("/Grupos").child(str(key)).get()

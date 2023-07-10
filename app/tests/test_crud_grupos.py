@@ -25,7 +25,7 @@ def test_lista_grupos_erro():
 
 def test_busca_grupo_por_id_sucesso():
     """Teste"""
-    response = client.get("/Grupos/busca-grupos-por-id/1")
+    response = client.get("/Grupos/busca-grupos-por-id/6")
     assert response.status_code == 200
     assert response.json()
 
@@ -41,7 +41,7 @@ def test_busca_grupo_por_id_erro():
 
 def test_busca_grupo_por_nome_sucesso():
     """Teste"""
-    response = client.get("/Grupos/busca-grupos-por-nome/grupo1")
+    response = client.get("/Grupos/busca-grupos-por-nome/Romance")
     assert response.status_code == 200
     assert response.json()
 
@@ -151,12 +151,12 @@ def test_cria_grupo_erro_nome_existente():
 
 def test_grupo_adicionar_membro_sucesso():
     """Teste"""
-    response = client.put("/Grupos/att-grupo/add-membro/admin/Romance/Faustão")
+    response = client.put("/Grupos/att-grupo/add-membro/Romance/zezin")
     assert response.status_code == 200
     assert response.json() == {
         "id": 6,
         "membros": [
-            "Jô Soares", "Faustão"
+            "Jô Soares", "zezin"
         ],
         "nome": "Romance",
         "preferencias": [
@@ -165,18 +165,9 @@ def test_grupo_adicionar_membro_sucesso():
     }
 
 
-def test_grupo_adicionar_membro_erro_nao_admin():
-    """Teste"""
-    response = client.put("/Grupos/att-grupo/add-membro/jao/Romance/Faustão")
-    assert response.status_code == 401
-    assert response.json() == {
-        "detail": "Erro: Usuário não é admin."
-    }
-
-
 def test_grupo_adicionar_membro_erro_membro_ja_registrado():
     """Teste"""
-    response = client.put("/Grupos/att-grupo/add-membro/admin/Romance/Faustão")
+    response = client.put("/Grupos/att-grupo/add-membro/Romance/zezin")
     assert response.status_code == 409
     assert response.json() == {
         "detail": "Erro: Membro já registrado no grupo."
@@ -185,7 +176,7 @@ def test_grupo_adicionar_membro_erro_membro_ja_registrado():
 
 def test_grupo_adicionar_membro_erro_grupo_nao_encontrado():
     """Teste"""
-    response = client.put("/Grupos/att-grupo/add-membro/admin/mamacos/Faustão")
+    response = client.put("/Grupos/att-grupo/add-membro/mamacos/zezin")
     assert response.status_code == 404
     assert response.json() == {
         "detail": "Erro: Grupo não encontrado."
@@ -194,7 +185,7 @@ def test_grupo_adicionar_membro_erro_grupo_nao_encontrado():
 
 def test_grupo_remover_membro_sucesso():
     """Teste"""
-    response = client.put("/Grupos/att-grupo/del-membro/admin/Romance/Faustão")
+    response = client.put("/Grupos/att-grupo/del-membro/Romance/zezin")
     assert response.status_code == 200
     assert response.json() == {
         "id": 6,
@@ -208,18 +199,9 @@ def test_grupo_remover_membro_sucesso():
     }
 
 
-def test_grupo_remover_membro_erro_nao_admin():
-    """Teste"""
-    response = client.put("/Grupos/att-grupo/del-membro/joao/Romance/Ratinho")
-    assert response.status_code == 401
-    assert response.json() == {
-        "detail": "Erro: Usuário não é admin."
-    }
-
-
 def test_grupo_remover_membro_erro_membro_nao_encontrado():
     """Teste"""
-    response = client.put("/Grupos/att-grupo/del-membro/admin/Romance/carlin")
+    response = client.put("/Grupos/att-grupo/del-membro/Romance/carlin")
     assert response.status_code == 404
     assert response.json() == {
         "detail": "Erro: Membro não encontrado."
@@ -228,7 +210,7 @@ def test_grupo_remover_membro_erro_membro_nao_encontrado():
 
 def test_grupo_remover_membro_erro_grupo_nao_encontrado():
     """Teste"""
-    response = client.put("/Grupos/att-grupo/del-membro/admin/j/car")
+    response = client.put("/Grupos/att-grupo/del-membro/j/car")
     assert response.status_code == 404
     assert response.json() == {
         "detail": "Erro: Grupo não encontrado."
