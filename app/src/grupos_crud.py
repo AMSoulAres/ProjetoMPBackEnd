@@ -205,6 +205,7 @@ async def atualizar_grupo_deletar_membro(n_grupo: str, usr_name: str):
     404(Grupo não encontrado.).
     """
     grupos = bancoAtlax.reference("/Grupos").get()
+    usuarios = bancoAtlax.reference("/Usuarios").get()
 
     if usr_name is None:
         raise exceptions.ERRO_CAMPO
@@ -222,8 +223,20 @@ async def atualizar_grupo_deletar_membro(n_grupo: str, usr_name: str):
                     grupo_att = grupo
                     bancoAtlax.reference("/Grupos").child(
                         str(key)).update(grupo_att)
-                    return bancoAtlax.reference("/Grupos").child(
-                        str(key)).get()
+                    for chave, usuario in usuarios.items():
+                        if chave == "Total":
+                            break
+                        if usr_name == usuario['username']:
+                            usr_att = usuario
+                            list_grupos = usr_att['grupos']
+                            for elemento in list_grupos:
+                                if elemento == n_grupo:
+                                    list_grupos.remove(elemento)
+                            usr_att['grupos'] = list_grupos
+                            bancoAtlax.reference("/Usuarios").child(
+                                str(chave)).update(usr_att)
+                            return bancoAtlax.reference("/Grupos").child(
+                                str(key)).get()
             raise HTTPException(status_code=404,
                                 detail="Erro: Membro não encontrado.")
     raise HTTPException(status_code=404,
@@ -266,6 +279,14 @@ async def atualizar_grupo_adicionar_membro(n_grupo: str, usr_name: str,):
             grupo['membros'].append(usr_name)
             grupo_att = grupo
             bancoAtlax.reference("/Grupos").child(str(key)).update(grupo_att)
+            for chave, usuario in usuarios.items():
+                if chave == "Total":
+                    break
+                if usr_name == usuario['username']:
+                    usr_att = usuario
+                    usr_att['grupos'].append(n_grupo)
+                    bancoAtlax.reference("/Usuarios").child(
+                        str(chave)).update(usr_att)
             return bancoAtlax.reference("/Grupos").child(str(key)).get()
     raise HTTPException(status_code=404,
                         detail="Erro: Grupo não encontrado.")
