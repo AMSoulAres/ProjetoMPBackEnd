@@ -103,7 +103,7 @@ def test_grupo_lista_membros_erro_grupo_nao_encontrado():
 
 def test_cria_grupo_sucesso():
     """Teste"""
-    response = client.post("/Grupos/add-grupo/admin",
+    response = client.post("/Grupos/add-grupo/admin/123456",
                            json={
                                "id": 99,
                                "nome": "Teste",
@@ -118,7 +118,7 @@ def test_cria_grupo_sucesso():
 
 def test_cria_grupo_erro_nao_admin():
     """Teste"""
-    response = client.post("/Grupos/add-grupo/0",
+    response = client.post("/Grupos/add-grupo/0/5",
                            json={
                               "id": 22,
                               "nome": "Ação",
@@ -133,7 +133,7 @@ def test_cria_grupo_erro_nao_admin():
 
 def test_cria_grupo_erro_nome_existente():
     """Teste"""
-    response = client.post("/Grupos/add-grupo/admin",
+    response = client.post("/Grupos/add-grupo/admin/123456",
                            json={
                                "id": 22,
                                "nome": "qualquernome",
@@ -222,7 +222,7 @@ def test_grupo_remover_membro_erro_grupo_nao_encontrado():
 
 def test_deleta_grupo_sucesso():
     """Teste"""
-    response = client.delete("/Grupos/del-grupo/admin/Teste")
+    response = client.delete("/Grupos/del-grupo/admin/123456/Teste")
     assert response.status_code == 200
     assert response.json() == {
         "message": "Grupo deletado com sucesso."
@@ -231,7 +231,7 @@ def test_deleta_grupo_sucesso():
 
 def test_deleta_grupo_nao_admin():
     """Teste"""
-    response = client.delete("/Grupos/del-grupo/usuario/acao")
+    response = client.delete("/Grupos/del-grupo/usuario/215/acao")
     assert response.status_code == 401
     assert response.json() == {
         "detail": "Erro: Usuário não é admin."
@@ -240,7 +240,7 @@ def test_deleta_grupo_nao_admin():
 
 def test_deleta_grupo_nao_encontrado():
     """Teste"""
-    response = client.delete("/Grupos/del-grupo/admin/jeremias")
+    response = client.delete("/Grupos/del-grupo/admin/123456/jeremias")
     assert response.status_code == 404
     assert response.json() == {
         "detail": "Grupo não encontrado."

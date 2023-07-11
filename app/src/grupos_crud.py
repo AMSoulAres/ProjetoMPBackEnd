@@ -20,11 +20,12 @@ router = APIRouter(
 # ------------------------- CREATE -------------------------
 
 
-@router.post("/add-grupo/{usr_name}")
-async def add_grupo(dados: GrupoModel, usr_name: str):
+@router.post("/add-grupo/{usr_name}/{senha}")
+async def add_grupo(dados: GrupoModel, usr_name: str, senha: int):
     """Cria um Grupo
-    Assertivas de Entrada: Username do usuário, para checar
-    se é admin, dados em formato json.
+    Assertivas de Entrada: Username do usuário e senha, para checar
+    se é admin, dados do grupo em formato json:{"id: "int",
+    "nome": "string", "membros": "list", "preferencias": "list"}.
 
     Assertiva de saída: O grupo é criado no banco de dados.
 
@@ -43,7 +44,8 @@ async def add_grupo(dados: GrupoModel, usr_name: str):
 
         if usr_name == usuario['username']:
             if usuario['id'] == 1:
-                admin = 1
+                if senha == usuario['senha']:
+                    admin = 1
     if admin == 0:
         raise HTTPException(
             status_code=401,
@@ -272,11 +274,12 @@ async def atualizar_grupo_adicionar_membro(n_grupo: str, usr_name: str,):
 # ------------------------- DELETE -------------------------
 
 
-@router.delete("/del-grupo/{usr_name}/{n_grupo}")
-async def deletar_grupo(n_grupo: str, usr_name: str):
+@router.delete("/del-grupo/{usr_name}/{senha}/{n_grupo}")
+async def deletar_grupo(usr_name: str, senha: int, n_grupo: str):
     """Deleta o grupo se o usuário for admin e o grupo for válido.
 
-    Assertivas de Entrada: Nome do usuário, nome do grupo.
+    Assertivas de Entrada: Nome do usuário e senha, nome do grupo a
+    ser deletado.
 
     Assertivas de Saída: O grupo é deletado no banco de dados.
 
@@ -296,7 +299,8 @@ async def deletar_grupo(n_grupo: str, usr_name: str):
 
         if usr_name == usuario['username']:
             if usuario['id'] == 1:
-                admin = 1
+                if senha == usuario['senha']:
+                    admin = 1
     if admin == 0:
         raise HTTPException(
             status_code=401,
