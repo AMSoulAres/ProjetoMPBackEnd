@@ -43,7 +43,7 @@ async def add_grupo(dados: GrupoModel, usr_name: str, senha: int):
             break
 
         if usr_name == usuario['username']:
-            if usuario['id'] == 1:
+            if usuario['admin'] == 1:
                 if senha == usuario['senha']:
                     admin = 1
     if admin == 0:
@@ -298,7 +298,7 @@ async def deletar_grupo(usr_name: str, senha: int, n_grupo: str):
             break
 
         if usr_name == usuario['username']:
-            if usuario['id'] == 1:
+            if usuario['admin'] == 1:
                 if senha == usuario['senha']:
                     admin = 1
     if admin == 0:
