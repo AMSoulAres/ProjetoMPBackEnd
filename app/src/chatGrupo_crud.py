@@ -27,16 +27,20 @@ async def buscar_grupo_message(idGrupo: int):
     Assertiva de saída:Retorna as mensagens do idgrupo.
     """
     grupos = bancoAtlax.reference("/Grupos").get()
+    chatgrupo = bancoAtlax.reference("/ChatGrupo/").get()
 
     try:
         busca_grupo_id(idGrupo, grupos)
-        if idGrupo not in grupos_mensagens:
-            grupos_mensagens[idGrupo] = []
-        return grupos_mensagens[idGrupo] 
+        lista_msg = []
+        if idGrupo not in chatgrupo.values():
+            bancoAtlax.reference("/ChatGrupo/").push(idGrupo)
+            #bancoAtlax.reference("/ChatGrupo/").set(idGrupo)
+        
+        return chatgrupo.get(idGrupo) #retorna os dados de msgs diretamente, mas é só trocar por lista
      
     except HTTPException as exception:
         raise exception
-        
+               
 
 
 @router.get("/usuario_grupo/{idGrupo}/{idUsuario}/")
@@ -99,6 +103,58 @@ async def enviar_grupo_menssage(idGrupo: int, idUsuario:int, Mensagens: Mensagem
 
     except HTTPException as exception:
         raise exception    
+
+""" ------------------------- CREATE -------------------------"""
+'''
+@router.post("/grupos_mensagens/{idGrupo}/{idUsuario}/")
+async def enviar_grupo_menssage(idGrupo: int, idUsuario:int, Mensagens :  MensagemModel):
+    """ Enviar mensagem para o grupo
+
+    Assertiva de entrada: id do grupo,id do usuario, e modelo de dados armazenados em MensagemModel.
+
+    Assertiva de saída:Retorna uma mensagem de sucesso caso a mensagem seja enviada."""
+
+    grupos = bancoAtlax.reference("/Grupos").get()
+    usuarios = bancoAtlax.reference("/Usuarios").get()
+    
+
+    try:
+        
+        busca_grupo_id(idGrupo, grupos)
+        busca_usuario_id(idUsuario, usuarios)
+
+        chatgrupo = bancoAtlax.reference("/ChatGrupo/").get()
+
+        if idGrupo not in chatgrupo.values():
+            bancoAtlax.reference("/ChatGrupo/").push(idGrupo)
+        
+        total_id = bancoAtlax.reference("/ChatGrupo/Total").child("Num").get()
+
+        body = json.loads(Mensagens.json())
+        body["idUsuario"] = idUsuario
+        body["timestamp"] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        
+        falta finalizar a parte de buscar caminho""
+        bancoAtlax.reference("/ChatGrupo/").push(body) -arrumar caminhos
+
+        chatgrupo.push({'timestamp' : str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
+                                'idUsuario' : idUsuario,
+                                'message': str
+                                })  --- Arrumar caminho
+    
+        grupos_mensagens[idGrupo] = sorted(grupos_mensagens[idGrupo], key=lambda x: x['timestamp'])
+    
+        bancoAtlax.reference("/ChatGrupo").child("Total").update({"Num": total_id + 1})
+
+        return JSONResponse(
+            status_code=201,
+            content={"message": "Mensagem enviada com sucesso!"}
+        )
+
+    except HTTPException as exception:
+        raise exception  
+'''
+
 
 "------------------------UPDATE--------------------------------"
 
